@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Epic Clips & Projects</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    body {
+      background: #0a0a0a;
+      color: #ffffff;
+      overflow-x: hidden;
+    }
+    /* Hero Section */
+    .hero {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      background: radial-gradient(circle at center, #1a1a2e 0%, #0a0a0a 100%);
+    }
+    .hero h1 {
+      font-size: 4rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      background: linear-gradient(90deg, #00f2fe, #4facfe);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: glow 2s infinite alternate;
+    }
+    @keyframes glow {
+      from { text-shadow: 0 0 10px rgba(79, 172, 254, 0.2); }
+      to { text-shadow: 0 0 20px rgba(79, 172, 254, 0.6); }
+    }
+    .hero p {
+      color: #a0aec0;
+      font-size: 1.2rem;
+      margin-top: 15px;
+      max-width: 600px;
+    }
+
+    /* Video Clips Gallery */
+    .gallery-section {
+      padding: 80px 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .gallery-section h2 {
+      font-size: 2.5rem;
+      margin-bottom: 40px;
+      text-align: center;
+      color: #e2e8f0;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+    }
+    .video-card {
+      background: #111;
+      border-radius: 15px;
+      overflow: hidden;
+      border: 1px solid #333;
+      transition: all 0.4s ease;
+      position: relative;
+    }
+    .video-card:hover {
+      transform: translateY(-10px) scale(1.02);
+      border-color: #4facfe;
+      box-shadow: 0 10px 30px rgba(79, 172, 254, 0.3);
+    }
+    .video-placeholder {
+      width: 100%;
+      height: 200px;
+      background: #1a1a2e;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #4facfe;
+      font-weight: bold;
+    }
+    .card-info {
+      padding: 20px;
+    }
+    .card-info h3 {
+      font-size: 1.2rem;
+      margin-bottom: 10px;
+    }
+    .card-info p {
+      color: #718096;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <h1>Welcome to My World</h1>
+    <p>Cinematic Edits | High-Quality Clips | Major Projects</p>
+  </section>
+
+  <!-- Clips Section -->
+  <section class="gallery-section">
+    <h2>LATEST CLIPS</h2>
+    <div class="grid">
+      
+      <!-- Card 1 -->
+      <div class="video-card">
+        <div class="video-placeholder">Video 1 Thumbnail</div>
+        <div class="card-info">
+          <h3>Epic Montage 01</h3>
+          <p>High bitrate render showcasing real-time graphics.</p>
+        </div>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="video-card">
+        <div class="video-placeholder">Video 2 Thumbnail</div>
+        <div class="card-info">
+          <h3>Project Reveal</h3>
+          <p>Cinematic camera angles and custom environment design.</p>
+        </div>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="video-card">
+        <div class="video-placeholder">Video 3 Thumbnail</div>
+        <div class="card-info">
+          <h3>Gameplay Highlight</h3>
+          <p>Action-packed moments with 8K ultra-realistic shaders.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+</body>
+</html>
