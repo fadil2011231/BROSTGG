@@ -4,6 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Vohx | Skin & Totem Studio</title>
+  
+  <!-- JSZip Library for generating Zip file -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
   <style>
     * {
       margin: 0;
@@ -178,11 +182,11 @@
         <button class="tool-btn">🎨</button>
         <button class="tool-btn">🔍</button>
       </div>
-      <!-- 3D Canvas Area -->
+      <!-- Canvas Area -->
       <div class="canvas-area">
-        [3D Skin Renderer / Canvas Area]
+        [3D Skin Renderer Coming Soon]
       </div>
-      <!-- Color Picker Area -->
+      <!-- Color Picker -->
       <div class="glass-panel" style="flex: 1;">
         <h3 style="margin-bottom: 20px;">Color Palette</h3>
         <input type="color" style="width:100%; height:50px; border:none; background:none; cursor:pointer;">
@@ -206,15 +210,21 @@
         <h3>Your Totem</h3>
       </div>
 
-      <!-- Controls -->
+      <!-- Controls & File Upload -->
       <div class="totem-form">
         <div class="input-group">
           <label>Minecraft Username</label>
           <input type="text" placeholder="Enter username...">
         </div>
-        <div class="file-drop">
-          📁 Click or Drag Skin File (.png)
+        
+        <!-- Hidden File Input -->
+        <input type="file" id="skinInput" accept=".png" style="display: none;">
+        
+        <!-- Dropzone Box -->
+        <div class="file-drop" id="dropZone" onclick="document.getElementById('skinInput').click()">
+          📁 Click to Select Skin File (.png)
         </div>
+
         <div class="input-group">
           <label>Minecraft Version</label>
           <select>
@@ -222,14 +232,17 @@
             <option>Java 1.19</option>
           </select>
         </div>
-        <button class="action-btn">Download Resource Pack</button>
+        
+        <!-- Generate Button -->
+        <button class="action-btn" id="downloadBtn" onclick="generatePack()">Download Resource Pack</button>
       </div>
 
     </div>
   </div>
 
+  <!-- JavaScript Functions -->
   <script>
-    // Simple JavaScript to switch between tabs
+    // 1. Tab Switching Function
     function switchTab(tabName) {
       document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
       document.querySelectorAll('.section-container').forEach(sec => sec.classList.remove('active'));
@@ -241,6 +254,46 @@
         document.querySelectorAll('.tab-btn')[1].classList.add('active');
         document.getElementById('totem-section').classList.add('active');
       }
+    }
+
+    // 2. File Upload & Zip Generation Logic
+    let uploadedFile = null;
+
+    document.getElementById('skinInput').addEventListener('change', function(event) {
+      uploadedFile = event.target.files[0];
+      if(uploadedFile) {
+        let dropZone = document.getElementById('dropZone');
+        dropZone.innerHTML = "✅ " + uploadedFile.name + " Selected!";
+        dropZone.style.borderColor = "#00f2fe";
+        dropZone.style.color = "#00f2fe";
+      }
+    });
+
+    async function generatePack() {
+      if (!uploadedFile) {
+        alert("Please select a Skin (.png) file first!");
+        return;
+      }
+
+      var zip = new JSZip();
+
+      var mcmeta = `{
+        "pack": {
+          "pack_format": 15,
+          "description": "Vohx Custom Totem Pack"
+        }
+      }`;
+      zip.file("pack.mcmeta", mcmeta);
+
+      var imgFolder = zip.folder("assets").folder("minecraft").folder("textures").folder("item");
+      imgFolder.file("totem_of_undying.png", uploadedFile);
+
+      zip.generateAsync({type:"blob"}).then(function(content) {
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(content);
+        link.download = "Vohx_Totem_Pack.zip";
+        link.click();
+      });
     }
   </script>
 
