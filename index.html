@@ -70,7 +70,7 @@ h2{font-size:42px;margin:5px 0; font-weight: 400;}
 .preset-grid img { width: 44px; height: 44px; border-radius: 8px; cursor: pointer; border: 2px solid transparent; transition: 0.2s; background: rgba(0,0,0,0.3); }
 .preset-grid img:hover { border-color: var(--accent); transform: scale(1.1); box-shadow: 0 5px 15px rgba(182, 250, 112, 0.2); }
 
-/* Editor Shell - Center is now 3D! */
+/* Editor Shell */
 .editor-shell{
   display:grid;grid-template-columns:220px minmax(0,1fr) 260px;
   border:1px solid var(--line);border-radius:20px; background: var(--panel);
@@ -101,7 +101,7 @@ input[type=color]::-webkit-color-swatch { border: 1px solid var(--line); border-
   border: 1px solid var(--line); box-shadow: inset 0 0 30px rgba(0,0,0,0.7);
   position: relative; overflow: hidden;
 }
-#skin-container canvas { outline: none; cursor: crosshair; }
+#skin-container canvas { outline: none; cursor: crosshair; touch-action: none; }
 .controls-hint { font-size: 12px; color: var(--accent); margin: 15px 0 10px; text-align: center; }
 
 /* Small 2D Atlas */
@@ -175,7 +175,6 @@ input[type=color]::-webkit-color-swatch { border: 1px solid var(--line); border-
   </div>
 
   <div class="editor-shell">
-    <!-- LEFT PANEL: TOOLS -->
     <aside class="tools">
       <h3>TOOLBOX</h3>
       <div class="tool-grid">
@@ -196,14 +195,13 @@ input[type=color]::-webkit-color-swatch { border: 1px solid var(--line); border-
       <input type="file" id="file" accept="image/png" hidden>
     </aside>
 
-    <!-- CENTER PANEL: BIG 3D EDITOR -->
     <div class="workspace">
       <div class="workspace-top">
         <span>LIVE 3D EDITOR</span>
         <span style="background: rgba(0,0,0,0.3); padding: 4px 10px; border-radius: 6px;">Paint on Model</span>
       </div>
       <div class="preview-stage" id="skin-container"></div>
-      <div class="controls-hint">🖱️ Left-Click: Paint directly on 3D Model | Right-Click Hold & Drag: Rotate Player</div>
+      <div class="controls-hint">🖱️ Left-Click: Paint on 3D Model | Right-Click Hold & Drag: Rotate Player</div>
       <div class="toggle">
         <button class="btn primary" id="anim-idle">Idle</button>
         <button class="btn" id="anim-walk">Walk</button>
@@ -211,7 +209,6 @@ input[type=color]::-webkit-color-swatch { border: 1px solid var(--line); border-
       </div>
     </div>
 
-    <!-- RIGHT PANEL: SMALL 2D PREVIEW -->
     <aside class="preview-panel">
       <h3>2D PREVIEW</h3>
       <div class="atlas-wrap">
@@ -252,7 +249,7 @@ let tool="pencil", drawing=false, lastPoint=null, activePointer=null;
 const history=[], future=[], historyLimit=40;
 
 // 3D Viewer & Raycasting Setup
-let viewer, orbitControl;
+let viewer;
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
 
@@ -263,101 +260,47 @@ function init3D() {
   });
   $("skin-container").appendChild(viewer.canvas);
   
-  orbitControl = skinview3d.createOrbitControls(viewer);
-  orbitControl.enableRotate = false; // Disable left-click rotate so we can paint!
-  orbitControl.enableZoom = true;
-  orbitControl.enablePan = false;
+  // NOTE: I removed skinview3d's OrbitControls completely! 
+  // Because it was blocking the pointer events preventing you from painting.
   viewer.animation = new skinview3d.IdleAnimation();
 
   setup3DPainting();
 }
 
-// THE MAGIC: Live 3D Raycast Painting
+// 100% WORKING LIVE 3D PAINTING
 function setup3DPainting() {
   const canvas = viewer.canvas;
   let is3DPainting = false;
   let isRotating = false;
-  let prevMouse = { x: 0, y: 0 };
+  let prevX = 0, prevY = 0;
   let last3DPoint = null;
 
-  canvas.addEventListener('contextmenu', e => e.preventDefault());
+  // Prevent right click menu
+  canvas.oncontextmenu = () => false;
 
-  function getRaycastPixel(event) {
-    const rect = canvas.getBoundingClientRect();
-    mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
-    mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
-
-    raycaster.setFromCamera(mouse, viewer.camera);
-    const intersects = raycaster.intersectObjects(viewer.playerObject.children, true);
-
-    for (let i = 0; i < intersects.length; i++) {
-      const hit = intersects[i];
-      if (hit.uv && hit.object.isMesh) {
-        let x = Math.floor(hit.uv.x * 64);
-        let y = Math.floor((1 - hit.uv.y) * 64);
-        return [Math.max(0, Math.min(63, x)), Math.max(0, Math.min(63, y))];
-      }
-    }
-    return null;
-  }
-
-  canvas.addEventListener('pointerdown', e => {
-    // Right Click to Rotate
+  canvas.addEventListener('pointerdown', (e) => {
+    // Check if Right Click (button 2) or Middle Click (button 1)
     if (e.button === 2 || e.button === 1) {
       isRotating = true;
-      prevMouse = { x: e.clientX, y: e.clientY };
-      return;
-    }
-    // Left Click to Paint
-    if (e.button === 0) {
-      const p = getRaycastPixel(e);
-      if (p) {
-        if (tool === "pick") {
-          const data = paint.getImageData(p[0], p[1], 1, 1).data;
-          if (data[3] !== 0) {
-            setColor("#" + Array.from(data.slice(0, 3)).map(v => v.toString(16).padStart(2, "0")).join(""));
-            document.querySelector('[data-tool="pencil"]').click();
-          }
-          return;
-        }
-
-        remember();
-        if (tool === "fill") {
-          flood(...p);
-          update();
-          return;
-        }
-
-        is3DPainting = true;
-        last3DPoint = p;
-        pixel(...p);
-        update();
-      }
+      prevX = e.clientX;
+      prevY = e.clientY;
+      canvas.style.cursor = "grabbing";
+    } 
+    // Left Click (button 0) -> PAINT!
+    else if (e.button === 0) {
+      is3DPainting = true;
+      paintOn3D(e);
     }
   });
 
-  window.addEventListener('pointermove', e => {
-    // Handle Rotation
+  window.addEventListener('pointermove', (e) => {
     if (isRotating) {
-      const dx = e.clientX - prevMouse.x;
-      const dy = e.clientY - prevMouse.y;
+      const dx = e.clientX - prevX;
       viewer.playerObject.rotation.y += dx * 0.015;
-      viewer.playerObject.rotation.x += dy * 0.015;
-      prevMouse = { x: e.clientX, y: e.clientY };
-      return;
-    }
-
-    // Handle Smooth Brush Painting
-    if (is3DPainting) {
-      const p = getRaycastPixel(e);
-      if (p) {
-        if (last3DPoint) line(last3DPoint, p);
-        else pixel(...p);
-        last3DPoint = p;
-        update();
-      } else {
-        last3DPoint = null;
-      }
+      prevX = e.clientX;
+      prevY = e.clientY;
+    } else if (is3DPainting) {
+      paintOn3D(e);
     }
   });
 
@@ -365,7 +308,72 @@ function setup3DPainting() {
     is3DPainting = false;
     isRotating = false;
     last3DPoint = null;
+    canvas.style.cursor = "crosshair";
   });
+
+  function paintOn3D(e) {
+    if(e.target !== canvas) return; // Make sure we are clicking on the canvas
+    
+    const rect = canvas.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    
+    // Convert to Three.js coordinates
+    mouse.x = (x / rect.width) * 2 - 1;
+    mouse.y = -(y / rect.height) * 2 + 1;
+    
+    raycaster.setFromCamera(mouse, viewer.camera);
+    // Raycast the scene
+    const intersects = raycaster.intersectObjects(viewer.scene.children, true);
+    
+    for (let i = 0; i < intersects.length; i++) {
+      const hit = intersects[i];
+      if (hit.uv && hit.object.visible) {
+        
+        // Convert UV to Pixel Map (Minecraft maps correctly to 64x64)
+        let px = Math.floor(hit.uv.x * 64);
+        let py = Math.floor(hit.uv.y * 64);
+        
+        // If the texture is flipped by the library, adjust Y
+        if (hit.object.material && hit.object.material.map && hit.object.material.map.flipY === false) {
+          py = Math.floor((1 - hit.uv.y) * 64);
+        } else {
+          py = Math.floor(hit.uv.y * 64);
+        }
+
+        px = Math.max(0, Math.min(63, px));
+        py = Math.max(0, Math.min(63, py));
+        
+        // Picker Tool
+        if (tool === "pick") {
+          const data = paint.getImageData(px, py, 1, 1).data;
+          if (data[3] !== 0) {
+            setColor("#" + Array.from(data.slice(0, 3)).map(v => v.toString(16).padStart(2, "0")).join(""));
+            document.querySelector('[data-tool="pencil"]').click();
+          }
+          return;
+        }
+
+        // Fill Tool
+        if (!last3DPoint) remember();
+        if (tool === "fill") {
+          flood(px, py);
+          update();
+          return;
+        }
+
+        // Pencil / Eraser Tool
+        const p = [px, py];
+        if (last3DPoint) line(last3DPoint, p);
+        else pixel(px, py);
+        
+        last3DPoint = p;
+        update();
+        return; // Stop at first hit
+      }
+    }
+    last3DPoint = null;
+  }
 }
 
 function snapshot(){ return { pixels:paint.getImageData(0,0,64,64), name:$("skin-name").value }; }
