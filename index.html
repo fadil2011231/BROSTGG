@@ -1,10 +1,10 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#090b14">
+
 <title>SkinForge — Pro 3D Skin Studio</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
@@ -23,7 +23,9 @@
   --glow:rgba(182,250,112,.3);
 }
 
-*{box-sizing:border-box}
+*{
+  box-sizing:border-box;
+}
 
 body{
   margin:0;
@@ -35,8 +37,7 @@ body{
 
 #particles-bg{
   position:fixed;
-  top:0;
-  left:0;
+  inset:0;
   width:100%;
   height:100%;
   z-index:-2;
@@ -68,12 +69,15 @@ body{
   right:-10%;
 }
 
-button,input{
+button,
+input{
   font:inherit;
   outline:none;
 }
 
-button{cursor:pointer}
+button{
+  cursor:pointer;
+}
 
 a{
   color:inherit;
@@ -87,7 +91,10 @@ a{
   position:relative;
 }
 
-h1,h2,.brand,.tag{
+h1,
+h2,
+.brand,
+.tag{
   font-family:'Bebas Neue',sans-serif;
   letter-spacing:1px;
 }
@@ -230,7 +237,6 @@ h2{
 .preset-grid img:hover{
   border-color:var(--accent);
   transform:scale(1.1);
-  box-shadow:0 5px 15px rgba(182,250,112,.2);
 }
 
 .editor-shell{
@@ -382,6 +388,7 @@ input[type=color]::-webkit-color-swatch{
   outline:none;
   cursor:crosshair;
   touch-action:none;
+  user-select:none;
 }
 
 .controls-hint{
@@ -470,6 +477,7 @@ input[type=color]::-webkit-color-swatch{
 }
 
 @media(max-width:1050px){
+
   .editor-shell{
     grid-template-columns:180px minmax(0,1fr);
   }
@@ -479,9 +487,11 @@ input[type=color]::-webkit-color-swatch{
     border-left:0;
     border-top:1px solid var(--line);
   }
+
 }
 
 @media(max-width:768px){
+
   .wrap{
     padding:0 20px;
   }
@@ -498,6 +508,7 @@ input[type=color]::-webkit-color-swatch{
     border-right:0;
     border-bottom:1px solid var(--line);
   }
+
 }
 </style>
 </head>
@@ -512,7 +523,9 @@ input[type=color]::-webkit-color-swatch{
 <div class="wrap">
 
 <header>
-  <a class="brand" href="#">SKIN<span>FORGE</span></a>
+  <a class="brand" href="#">
+    SKIN<span>FORGE</span>
+  </a>
 </header>
 
 <main>
@@ -522,26 +535,37 @@ input[type=color]::-webkit-color-swatch{
 <div class="heading">
   <div>
     <div class="tag">PRO 3D SKIN STUDIO</div>
+
     <h2>Fetch & 3D Paint</h2>
+
     <div class="sub">
-      Just like Skindex! Paint directly on the big 3D model.
+      Paint directly on the Minecraft 3D model.
     </div>
   </div>
 </div>
 
+
+<!-- LOAD SKIN -->
+
 <div class="fetch-bar">
 
-<input
-  type="text"
-  id="username-input"
-  placeholder="e.g. Dream, Technoblade, Grian..."
->
+  <input
+    type="text"
+    id="username-input"
+    placeholder="e.g. Dream, Technoblade, Grian..."
+  >
 
-<button class="btn primary" id="fetch-btn">
-🔍 Load Skin
-</button>
+  <button
+    class="btn primary"
+    id="fetch-btn"
+  >
+    🔍 Load Skin
+  </button>
 
 </div>
+
+
+<!-- PRESETS -->
 
 <div class="presets">
 
@@ -590,7 +614,13 @@ input[type=color]::-webkit-color-swatch{
 </div>
 </div>
 
+
+<!-- EDITOR -->
+
 <div class="editor-shell">
+
+
+<!-- TOOLS -->
 
 <aside class="tools">
 
@@ -632,43 +662,62 @@ Picker
 
 </div>
 
+
 <div class="color-row">
 
 <input
   type="color"
   id="color"
   value="#b6fa70"
-  aria-label="Paint color"
 >
 
 <span
   id="hex"
   style="font-family:monospace;text-transform:uppercase;"
 >
-#b6fa70
+#B6FA70
 </span>
 
 </div>
 
-<div class="swatches" id="swatches"></div>
 
-<button class="btn" id="undo">
+<div
+  class="swatches"
+  id="swatches"
+></div>
+
+
+<button
+  class="btn"
+  id="undo"
+>
 ↶ Undo
 </button>
 
-<button class="btn" id="redo">
+<button
+  class="btn"
+  id="redo"
+>
 ↷ Redo
 </button>
 
+
 <label class="check">
-<input type="checkbox" id="show-grid" checked>
+
+<input
+  type="checkbox"
+  id="show-grid"
+  checked
+>
+
 Show Pixel Grid
+
 </label>
+
 
 <button
   class="btn"
   id="import-button"
-  style="margin-top:10px;"
 >
 ↑ Import PNG
 </button>
@@ -682,11 +731,16 @@ Show Pixel Grid
 
 </aside>
 
+
+<!-- 3D WORKSPACE -->
+
 <div class="workspace">
 
 <div class="workspace-top">
 
-<span>LIVE 3D EDITOR</span>
+<span>
+LIVE 3D EDITOR
+</span>
 
 <span
   style="
@@ -700,32 +754,48 @@ Paint on Model
 
 </div>
 
+
 <div
   class="preview-stage"
   id="skin-container"
 ></div>
 
+
 <div class="controls-hint">
-🖱️ Left-Click: Paint | Right-Click Hold + Drag: Rotate
+🖱️ LEFT = PAINT &nbsp; | &nbsp;
+🖱️ RIGHT HOLD + DRAG = ROTATE
 </div>
+
 
 <div class="toggle">
 
-<button class="btn primary" id="anim-idle">
+<button
+  class="btn primary"
+  id="anim-idle"
+>
 Idle
 </button>
 
-<button class="btn" id="anim-walk">
+<button
+  class="btn"
+  id="anim-walk"
+>
 Walk
 </button>
 
-<button class="btn" id="anim-run">
+<button
+  class="btn"
+  id="anim-run"
+>
 Run
 </button>
 
 </div>
 
 </div>
+
+
+<!-- 2D PREVIEW -->
 
 <aside class="preview-panel">
 
@@ -748,6 +818,7 @@ Run
 Small view of the flat skin map.
 </p>
 
+
 <label
   style="display:block;margin-top:20px;"
 >
@@ -760,6 +831,7 @@ Skin filename
   maxlength="60"
   value="Custom-Skin"
 >
+
 
 <button
   class="btn primary"
@@ -776,10 +848,13 @@ Skin filename
 </aside>
 
 </div>
+
 </section>
 
 </main>
+
 </div>
+
 
 <div
   id="notice"
@@ -787,95 +862,137 @@ Skin filename
   aria-live="polite"
 ></div>
 
+
 <script>
 "use strict";
+
+
+/* =========================================================
+   BASIC HELPERS
+========================================================= */
 
 const $ = id => document.getElementById(id);
 
 let noticeTimer;
 
+
 function notify(text){
+
   $("notice").textContent = text;
+
   $("notice").style.opacity = "1";
-  $("notice").style.transform = "translate(-50%, 0)";
+
+  $("notice").style.transform =
+    "translate(-50%,0)";
 
   clearTimeout(noticeTimer);
 
   noticeTimer = setTimeout(() => {
+
     $("notice").style.opacity = "0";
-    $("notice").style.transform = "translate(-50%, 20px)";
+
+    $("notice").style.transform =
+      "translate(-50%,20px)";
+
   },3500);
+
 }
+
 
 function loadPreset(name){
+
   $("username-input").value = name;
+
   $("fetch-btn").click();
+
 }
 
 
-/* =========================
-   EDITOR CORE
-========================= */
+/* =========================================================
+   SKIN CANVAS
+========================================================= */
 
-const skin = document.createElement("canvas");
+const skin =
+  document.createElement("canvas");
 
 skin.width = 64;
 skin.height = 64;
 
-const paint = skin.getContext("2d",{
-  willReadFrequently:true
-});
+const paint =
+  skin.getContext("2d",{
+    willReadFrequently:true
+  });
 
-const atlas = $("atlas");
-const ac = atlas.getContext("2d");
+
+const atlas =
+  $("atlas");
+
+const ac =
+  atlas.getContext("2d");
+
 
 let tool = "pencil";
+
 let drawing = false;
+
 let lastPoint = null;
+
 let activePointer = null;
 
+
 const history = [];
+
 const future = [];
+
 const historyLimit = 40;
 
 
-/* =========================
-   3D VIEWER
-========================= */
+/* =========================================================
+   THREE / SKINVIEW
+========================================================= */
 
-let viewer;
+let viewer = null;
 
-const raycaster = new THREE.Raycaster();
-const mouse = new THREE.Vector2();
+const raycaster =
+  new THREE.Raycaster();
 
+const mouse =
+  new THREE.Vector2();
+
+
+/* =========================================================
+   INITIALIZE 3D
+========================================================= */
 
 function init3D(){
 
-  viewer = new skinview3d.SkinViewer({
+  viewer =
+    new skinview3d.SkinViewer({
 
-    canvas: document.createElement("canvas"),
+      canvas:
+        document.createElement("canvas"),
 
-    width:450,
+      width:450,
 
-    height:480,
+      height:480,
 
-    skin:skin.toDataURL()
+      skin:
+        skin.toDataURL()
 
-  });
+    });
 
-  $("skin-container").appendChild(viewer.canvas);
+
+  $("skin-container")
+    .appendChild(viewer.canvas);
 
 
   /*
-   * IMPORTANT FIX
+   * VERY IMPORTANT:
    *
-   * Disable SkinView3D's built-in mouse controls.
+   * Disable SkinView3D's built-in mouse
+   * rotation controls.
    *
-   * This prevents LEFT CLICK from rotating
-   * the Minecraft character.
-   *
-   * Rotation is handled manually below
-   * using RIGHT CLICK.
+   * We handle the mouse ourselves.
    */
 
   if(viewer.controls){
@@ -894,16 +1011,19 @@ function init3D(){
 
 
   setup3DPainting();
+
 }
 
 
-/* =========================
-   3D PAINTING + ROTATION
-========================= */
+/* =========================================================
+   3D PAINTING
+========================================================= */
 
 function setup3DPainting(){
 
-  const canvas = viewer.canvas;
+  const canvas =
+    viewer.canvas;
+
 
   let is3DPainting = false;
 
@@ -917,33 +1037,34 @@ function setup3DPainting(){
 
 
   /*
-   * Disable browser right-click menu.
+   * Disable right-click browser menu.
    */
 
-  canvas.oncontextmenu = function(e){
+  canvas.addEventListener(
+    "contextmenu",
+    e => {
 
-    e.preventDefault();
+      e.preventDefault();
 
-    return false;
-
-  };
+    }
+  );
 
 
   /*
-   * POINTER DOWN
+   * MOUSE / POINTER DOWN
    */
 
   canvas.addEventListener(
     "pointerdown",
-    function(e){
+    e => {
 
       e.preventDefault();
 
+
       /*
        * RIGHT CLICK
-       * button 2
        *
-       * RIGHT CLICK = ROTATE
+       * Rotate only.
        */
 
       if(e.button === 2){
@@ -952,21 +1073,32 @@ function setup3DPainting(){
 
         is3DPainting = false;
 
+        last3DPoint = null;
+
         prevX = e.clientX;
 
         prevY = e.clientY;
 
-        canvas.style.cursor = "grabbing";
+        canvas.style.cursor =
+          "grabbing";
 
-        canvas.setPointerCapture?.(e.pointerId);
+        try{
+
+          canvas.setPointerCapture(
+            e.pointerId
+          );
+
+        }catch(err){}
 
         return;
+
       }
 
 
       /*
        * MIDDLE CLICK
-       * optional rotation
+       *
+       * Also rotate.
        */
 
       if(e.button === 1){
@@ -975,23 +1107,32 @@ function setup3DPainting(){
 
         is3DPainting = false;
 
+        last3DPoint = null;
+
         prevX = e.clientX;
 
         prevY = e.clientY;
 
-        canvas.style.cursor = "grabbing";
+        canvas.style.cursor =
+          "grabbing";
 
-        canvas.setPointerCapture?.(e.pointerId);
+        try{
+
+          canvas.setPointerCapture(
+            e.pointerId
+          );
+
+        }catch(err){}
 
         return;
+
       }
 
 
       /*
        * LEFT CLICK
-       * button 0
        *
-       * LEFT CLICK = PAINT ONLY
+       * PAINT ONLY.
        */
 
       if(e.button === 0){
@@ -1002,7 +1143,8 @@ function setup3DPainting(){
 
         last3DPoint = null;
 
-        canvas.style.cursor = "crosshair";
+        canvas.style.cursor =
+          "crosshair";
 
         paintOn3D(e);
 
@@ -1016,9 +1158,9 @@ function setup3DPainting(){
    * POINTER MOVE
    */
 
-  window.addEventListener(
+  canvas.addEventListener(
     "pointermove",
-    function(e){
+    e => {
 
       /*
        * RIGHT / MIDDLE = ROTATE
@@ -1029,18 +1171,21 @@ function setup3DPainting(){
         const dx =
           e.clientX - prevX;
 
+
         /*
-         * Rotate horizontally.
+         * Horizontal rotation.
          */
 
         viewer.playerObject.rotation.y +=
           dx * 0.015;
+
 
         prevX = e.clientX;
 
         prevY = e.clientY;
 
         return;
+
       }
 
 
@@ -1062,9 +1207,9 @@ function setup3DPainting(){
    * POINTER UP
    */
 
-  window.addEventListener(
+  canvas.addEventListener(
     "pointerup",
-    function(e){
+    e => {
 
       is3DPainting = false;
 
@@ -1072,19 +1217,24 @@ function setup3DPainting(){
 
       last3DPoint = null;
 
-      canvas.style.cursor = "crosshair";
+      canvas.style.cursor =
+        "crosshair";
+
+      try{
+
+        canvas.releasePointerCapture(
+          e.pointerId
+        );
+
+      }catch(err){}
 
     }
   );
 
 
-  /*
-   * POINTER CANCEL
-   */
-
-  window.addEventListener(
+  canvas.addEventListener(
     "pointercancel",
-    function(){
+    () => {
 
       is3DPainting = false;
 
@@ -1092,23 +1242,21 @@ function setup3DPainting(){
 
       last3DPoint = null;
 
-      canvas.style.cursor = "crosshair";
+      canvas.style.cursor =
+        "crosshair";
 
     }
   );
 
 
-  /*
-   * PAINT ON 3D MODEL
-   */
+  /* =======================================================
+     PAINT ON 3D
+  ======================================================= */
 
   function paintOn3D(e){
 
-    if(e.target !== canvas){
-
+    if(e.target !== canvas)
       return;
-
-    }
 
 
     const rect =
@@ -1124,7 +1272,8 @@ function setup3DPainting(){
 
 
     /*
-     * Convert to Three.js coordinates.
+     * Convert screen position to
+     * normalized Three.js coordinates.
      */
 
     mouse.x =
@@ -1135,15 +1284,15 @@ function setup3DPainting(){
       -(y / rect.height) * 2 + 1;
 
 
+    /*
+     * Raycast.
+     */
+
     raycaster.setFromCamera(
       mouse,
       viewer.camera
     );
 
-
-    /*
-     * Raycast Minecraft model.
-     */
 
     const intersects =
       raycaster.intersectObjects(
@@ -1152,179 +1301,250 @@ function setup3DPainting(){
       );
 
 
+    if(!intersects.length){
+
+      last3DPoint = null;
+
+      return;
+
+    }
+
+
+    /*
+     * Find the first visible object
+     * with UV coordinates.
+     */
+
+    let hit = null;
+
+
     for(
       let i = 0;
       i < intersects.length;
       i++
     ){
 
-      const hit = intersects[i];
-
-
       if(
-        hit.uv &&
-        hit.object.visible
+        intersects[i].uv &&
+        intersects[i].object &&
+        intersects[i].object.visible
       ){
 
-        let px =
-          Math.floor(
-            hit.uv.x * 64
-          );
+        hit = intersects[i];
 
-
-        let py =
-          Math.floor(
-            hit.uv.y * 64
-          );
-
-
-        px =
-          Math.max(
-            0,
-            Math.min(63,px)
-          );
-
-
-        py =
-          Math.max(
-            0,
-            Math.min(63,py)
-          );
-
-
-        /*
-         * PICKER
-         */
-
-        if(tool === "pick"){
-
-          const data =
-            paint.getImageData(
-              px,
-              py,
-              1,
-              1
-            ).data;
-
-
-          if(data[3] !== 0){
-
-            setColor(
-              "#" +
-              Array.from(
-                data.slice(0,3)
-              )
-              .map(
-                v =>
-                  v.toString(16)
-                   .padStart(2,"0")
-              )
-              .join("")
-            );
-
-
-            document
-              .querySelector(
-                '[data-tool="pencil"]'
-              )
-              .click();
-
-          }
-
-          return;
-        }
-
-
-        /*
-         * FILL
-         */
-
-        if(!last3DPoint){
-
-          remember();
-
-        }
-
-
-        if(tool === "fill"){
-
-          flood(px,py);
-
-          update();
-
-          return;
-
-        }
-
-
-        /*
-         * PENCIL / ERASER
-         */
-
-        const p = [px,py];
-
-
-        if(last3DPoint){
-
-          const dist =
-            Math.max(
-              Math.abs(
-                last3DPoint[0] - p[0]
-              ),
-              Math.abs(
-                last3DPoint[1] - p[1]
-              )
-            );
-
-
-          if(dist < 4){
-
-            line(
-              last3DPoint,
-              p
-            );
-
-          }else{
-
-            pixel(px,py);
-
-          }
-
-        }else{
-
-          /*
-           * Save history only once
-           * when starting a stroke.
-           */
-
-          remember();
-
-          pixel(px,py);
-
-        }
-
-
-        last3DPoint = p;
-
-        update();
-
-        return;
+        break;
 
       }
 
     }
 
 
-    last3DPoint = null;
+    if(!hit){
+
+      last3DPoint = null;
+
+      return;
+
+    }
+
+
+    /*
+     * =====================================================
+     * IMPORTANT UV FIX
+     * =====================================================
+     *
+     * Three.js UV coordinates use a different Y
+     * orientation from the HTML canvas.
+     *
+     * Previous code used:
+     *
+     *     py = uv.y * 64
+     *
+     * which caused painting on the wrong part.
+     *
+     * Correct:
+     *
+     *     py = (1 - uv.y) * 64
+     */
+
+    let px =
+      Math.floor(
+        hit.uv.x * 64
+      );
+
+
+    let py =
+      Math.floor(
+        (1 - hit.uv.y) * 64
+      );
+
+
+    /*
+     * Keep inside 64x64.
+     */
+
+    px =
+      Math.max(
+        0,
+        Math.min(63,px)
+      );
+
+
+    py =
+      Math.max(
+        0,
+        Math.min(63,py)
+      );
+
+
+    /*
+     * PICKER
+     */
+
+    if(tool === "pick"){
+
+      const data =
+        paint.getImageData(
+          px,
+          py,
+          1,
+          1
+        ).data;
+
+
+      if(data[3] !== 0){
+
+        const color =
+          "#" +
+          Array.from(
+            data.slice(0,3)
+          )
+          .map(
+            v =>
+              v.toString(16)
+               .padStart(2,"0")
+          )
+          .join("");
+
+
+        setColor(color);
+
+
+        document
+          .querySelector(
+            '[data-tool="pencil"]'
+          )
+          .click();
+
+      }
+
+      return;
+
+    }
+
+
+    /*
+     * FILL
+     */
+
+    if(tool === "fill"){
+
+      if(!last3DPoint){
+
+        remember();
+
+      }
+
+      flood(px,py);
+
+      update();
+
+      last3DPoint = [px,py];
+
+      return;
+
+    }
+
+
+    /*
+     * PENCIL / ERASER
+     */
+
+    const currentPoint =
+      [px,py];
+
+
+    /*
+     * First pixel of stroke.
+     */
+
+    if(!last3DPoint){
+
+      remember();
+
+      pixel(px,py);
+
+    }
+
+
+    /*
+     * Continue stroke.
+     */
+
+    else{
+
+      const dist =
+        Math.max(
+          Math.abs(
+            last3DPoint[0] - px
+          ),
+          Math.abs(
+            last3DPoint[1] - py
+          )
+        );
+
+
+      /*
+       * If mouse moved only a few pixels,
+       * draw a connected line.
+       */
+
+      if(dist <= 5){
+
+        line(
+          last3DPoint,
+          currentPoint
+        );
+
+      }else{
+
+        /*
+         * Large UV jump usually means the
+         * mouse crossed from one face to
+         * another. Don't draw a giant line.
+         */
+
+        pixel(px,py);
+
+      }
+
+    }
+
+
+    last3DPoint =
+      currentPoint;
+
+
+    update();
 
   }
 
 }
 
 
-/* =========================
+/* =========================================================
    HISTORY
-========================= */
+========================================================= */
 
 function snapshot(){
 
@@ -1352,6 +1572,7 @@ function remember(){
     snapshot()
   );
 
+
   if(
     history.length >
     historyLimit
@@ -1361,16 +1582,18 @@ function remember(){
 
   }
 
+
   future.length = 0;
 
 }
 
 
-/* =========================
-   UPDATE
-========================= */
+/* =========================================================
+   UPDATE EVERYTHING
+========================================================= */
 
-let renderTimeout;
+let renderTimeout = null;
+
 
 function update(){
 
@@ -1385,7 +1608,9 @@ function update(){
     256
   );
 
-  ac.imageSmoothingEnabled = false;
+
+  ac.imageSmoothingEnabled =
+    false;
 
 
   ac.drawImage(
@@ -1449,7 +1674,7 @@ function update(){
 
 
   /*
-   * Update 3D model.
+   * Update 3D skin.
    */
 
   if(viewer){
@@ -1461,11 +1686,14 @@ function update(){
 
     renderTimeout =
       setTimeout(
-        () =>
+        () => {
+
           viewer.loadSkin(
             skin.toDataURL()
-          ),
-        10
+          );
+
+        },
+        20
       );
 
   }
@@ -1481,9 +1709,9 @@ function update(){
 }
 
 
-/* =========================
-   LOAD SKIN
-========================= */
+/* =========================================================
+   LOAD IMAGE INTO EDITOR
+========================================================= */
 
 function loadIntoEditor(
   source,
@@ -1509,7 +1737,9 @@ function loadIntoEditor(
   paint.drawImage(
     source,
     0,
-    0
+    0,
+    64,
+    64
   );
 
 
@@ -1522,9 +1752,9 @@ function loadIntoEditor(
 }
 
 
-/* =========================
-   FETCH MINECRAFT SKIN
-========================= */
+/* =========================================================
+   MINECRAFT USERNAME LOADER
+========================================================= */
 
 $("fetch-btn").onclick =
 function(){
@@ -1557,24 +1787,22 @@ function(){
     new Image();
 
 
+  img.crossOrigin =
+    "Anonymous";
+
+
   if(
     user.toUpperCase() ===
     "BROSTGG"
   ){
-
-    img.crossOrigin =
-      "Anonymous";
 
     img.src =
       "https://i.postimg.cc/mkDbXDVd/D.png";
 
   }else{
 
-    img.crossOrigin =
-      "Anonymous";
-
     img.src =
-      `https://minotar.net/skin/${user}`;
+      `https://minotar.net/skin/${encodeURIComponent(user)}`;
 
   }
 
@@ -1609,9 +1837,9 @@ function(){
 };
 
 
-/* =========================
+/* =========================================================
    ANIMATION
-========================= */
+========================================================= */
 
 function setAnim(type){
 
@@ -1669,53 +1897,48 @@ function setAnim(type){
 $("anim-idle").onclick =
 () => setAnim("idle");
 
+
 $("anim-walk").onclick =
 () => setAnim("walk");
+
 
 $("anim-run").onclick =
 () => setAnim("run");
 
 
-/* =========================
+/* =========================================================
    TOOLS
-========================= */
+========================================================= */
 
 document
   .querySelectorAll("[data-tool]")
-  .forEach(
-    b => {
+  .forEach(button => {
 
-      b.onclick = () => {
+    button.onclick = () => {
 
-        tool =
-          b.dataset.tool;
+      tool =
+        button.dataset.tool;
 
 
-        document
-          .querySelectorAll(
-            "[data-tool]"
-          )
-          .forEach(
-            btn => {
+      document
+        .querySelectorAll("[data-tool]")
+        .forEach(btn => {
 
-              btn.classList.toggle(
-                "active",
-                btn.dataset.tool ===
-                tool
-              );
-
-            }
+          btn.classList.toggle(
+            "active",
+            btn.dataset.tool === tool
           );
 
-      };
+        });
 
-    }
-  );
+    };
+
+  });
 
 
-/* =========================
+/* =========================================================
    COLORS
-========================= */
+========================================================= */
 
 function setColor(value){
 
@@ -1723,7 +1946,7 @@ function setColor(value){
     value;
 
   $("hex").textContent =
-    value;
+    value.toUpperCase();
 
 }
 
@@ -1747,42 +1970,40 @@ e =>
   "#f7c657",
   "#43bca0"
 ]
-.forEach(
-  color => {
+.forEach(color => {
 
-    const b =
-      document.createElement(
-        "button"
-      );
-
-
-    b.className =
-      "swatch";
+  const button =
+    document.createElement(
+      "button"
+    );
 
 
-    b.style.background =
-      color;
+  button.className =
+    "swatch";
 
 
-    b.onclick =
-      () =>
-        setColor(color);
+  button.style.background =
+    color;
 
 
-    $("swatches")
-      .appendChild(b);
+  button.onclick =
+    () =>
+      setColor(color);
 
-  }
-);
+
+  $("swatches")
+    .appendChild(button);
+
+});
 
 
 $("show-grid").onchange =
 update;
 
 
-/* =========================
-   UNDO / REDO
-========================= */
+/* =========================================================
+   UNDO
+========================================================= */
 
 $("undo").onclick =
 function(){
@@ -1796,12 +2017,12 @@ function(){
   );
 
 
-  const prev =
+  const previous =
     history.pop();
 
 
   paint.putImageData(
-    prev.pixels,
+    previous.pixels,
     0,
     0
   );
@@ -1811,6 +2032,10 @@ function(){
 
 };
 
+
+/* =========================================================
+   REDO
+========================================================= */
 
 $("redo").onclick =
 function(){
@@ -1824,12 +2049,12 @@ function(){
   );
 
 
-  const nxt =
+  const next =
     future.pop();
 
 
   paint.putImageData(
-    nxt.pixels,
+    next.pixels,
     0,
     0
   );
@@ -1840,9 +2065,9 @@ function(){
 };
 
 
-/* =========================
+/* =========================================================
    FLOOD FILL
-========================= */
+========================================================= */
 
 function flood(x,y){
 
@@ -1855,7 +2080,7 @@ function flood(x,y){
     );
 
 
-  const d =
+  const data =
     image.data;
 
 
@@ -1865,7 +2090,7 @@ function flood(x,y){
 
   const original =
     Array.from(
-      d.slice(
+      data.slice(
         offset,
         offset + 4
       )
@@ -1938,7 +2163,7 @@ function flood(x,y){
     if(
       !original.every(
         (v,k) =>
-          d[i+k] === v
+          data[i+k] === v
       )
     ){
 
@@ -1949,7 +2174,7 @@ function flood(x,y){
 
     replacement.forEach(
       (v,k) =>
-        d[i+k] = v
+        data[i+k] = v
     );
 
 
@@ -1990,13 +2215,13 @@ function flood(x,y){
 }
 
 
-/* =========================
-   2D DRAWING
-========================= */
+/* =========================================================
+   2D ATLAS
+========================================================= */
 
 function point(event){
 
-  const r =
+  const rect =
     atlas.getBoundingClientRect();
 
 
@@ -2007,9 +2232,14 @@ function point(event){
       Math.min(
         63,
         Math.floor(
-          (event.clientX - r.left)
-          / r.width
-          * 64
+          (
+            event.clientX -
+            rect.left
+          )
+          /
+          rect.width
+          *
+          64
         )
       )
     ),
@@ -2019,9 +2249,14 @@ function point(event){
       Math.min(
         63,
         Math.floor(
-          (event.clientY - r.top)
-          / r.height
-          * 64
+          (
+            event.clientY -
+            rect.top
+          )
+          /
+          rect.height
+          *
+          64
         )
       )
     )
@@ -2084,9 +2319,9 @@ function line(a,b){
   ){
 
     const t =
-      steps
-      ? i / steps
-      : 0;
+      steps === 0
+      ? 0
+      : i / steps;
 
 
     pixel(
@@ -2106,13 +2341,13 @@ function line(a,b){
 }
 
 
-/* =========================
-   2D CANVAS INPUT
-========================= */
+/* =========================================================
+   2D PAINTING
+========================================================= */
 
 atlas.addEventListener(
   "pointerdown",
-  function(event){
+  event => {
 
     if(
       event.button !== 0 ||
@@ -2130,6 +2365,10 @@ atlas.addEventListener(
     const p =
       point(event);
 
+
+    /*
+     * PICKER
+     */
 
     if(tool === "pick"){
 
@@ -2175,10 +2414,15 @@ atlas.addEventListener(
     remember();
 
 
+    /*
+     * FILL
+     */
+
     if(tool === "fill"){
 
       flood(
-        ...p
+        p[0],
+        p[1]
       );
 
 
@@ -2188,6 +2432,10 @@ atlas.addEventListener(
 
     }
 
+
+    /*
+     * NORMAL DRAWING
+     */
 
     drawing = true;
 
@@ -2202,7 +2450,11 @@ atlas.addEventListener(
     );
 
 
-    pixel(...p);
+    pixel(
+      p[0],
+      p[1]
+    );
+
 
     update();
 
@@ -2212,7 +2464,7 @@ atlas.addEventListener(
 
 atlas.addEventListener(
   "pointermove",
-  function(event){
+  event => {
 
     if(
       !drawing ||
@@ -2237,13 +2489,14 @@ atlas.addEventListener(
 
     lastPoint = p;
 
+
     update();
 
   }
 );
 
 
-function finish(event){
+function finish2D(event){
 
   if(
     event.pointerId !==
@@ -2266,23 +2519,23 @@ function finish(event){
 
 atlas.addEventListener(
   "pointerup",
-  finish
+  finish2D
 );
 
 atlas.addEventListener(
   "pointercancel",
-  finish
+  finish2D
 );
 
 atlas.addEventListener(
   "lostpointercapture",
-  finish
+  finish2D
 );
 
 
-/* =========================
+/* =========================================================
    DOWNLOAD
-========================= */
+========================================================= */
 
 $("download").onclick =
 function(){
@@ -2344,9 +2597,9 @@ function(){
 };
 
 
-/* =========================
+/* =========================================================
    IMPORT PNG
-========================= */
+========================================================= */
 
 $("import-button").onclick =
 () =>
@@ -2354,7 +2607,7 @@ $("import-button").onclick =
 
 
 $("file").onchange =
-function(event){
+event => {
 
   const file =
     event.target.files[0];
@@ -2378,7 +2631,7 @@ function(event){
 
 
   image.onload =
-  function(){
+  () => {
 
     URL.revokeObjectURL(
       url
@@ -2402,9 +2655,9 @@ function(event){
 };
 
 
-/* =========================
+/* =========================================================
    START
-========================= */
+========================================================= */
 
 init3D();
 
@@ -2422,7 +2675,7 @@ steveImg.src =
 
 
 steveImg.onload =
-function(){
+() => {
 
   loadIntoEditor(
     steveImg,
@@ -2436,4 +2689,3 @@ function(){
 
 </body>
 </html>
-```
