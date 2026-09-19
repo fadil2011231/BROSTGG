@@ -54,13 +54,20 @@ h2{font-size:42px;margin:5px 0; font-weight: 400;}
 .fetch-bar {
   display: flex; gap: 15px; background: rgba(0,0,0,0.3); padding: 20px;
   border-radius: 12px; border: 1px solid var(--line); backdrop-filter: blur(10px);
-  max-width: 600px; margin-bottom: 40px;
+  max-width: 600px; margin-bottom: 20px;
 }
 .fetch-bar input {
   flex: 1; padding: 12px 18px; background: rgba(255,255,255,0.05);
   border: 1px solid var(--line); border-radius: 8px; color: #fff; font-size: 15px;
 }
 .fetch-bar input:focus { border-color: var(--accent); }
+
+/* Preset Gallery */
+.presets { margin-bottom: 40px; max-width: 600px; }
+.presets h4 { margin: 0 0 12px; color: var(--muted); font-size: 14px; font-family: 'Bebas Neue', sans-serif; letter-spacing: 1px; }
+.preset-grid { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+.preset-grid img { width: 44px; height: 44px; border-radius: 8px; cursor: pointer; border: 2px solid transparent; transition: 0.2s; background: rgba(0,0,0,0.3); }
+.preset-grid img:hover { border-color: var(--accent); transform: scale(1.1); box-shadow: 0 5px 15px rgba(182, 250, 112, 0.2); }
 
 /* Editor Shell */
 .editor-shell{
@@ -152,6 +159,19 @@ input[type=color]::-webkit-color-swatch { border: 1px solid var(--line); border-
     <button class="btn primary" id="fetch-btn">🔍 Load Skin</button>
   </div>
 
+  <!-- 6th Feature: Preset Skins Gallery -->
+  <div class="presets">
+    <h4>🔥 QUICK LOAD PRESETS</h4>
+    <div class="preset-grid">
+      <button class="btn" onclick="loadPreset('BROSTGG')" style="padding: 10px 16px;">😎 BROSTGG</button>
+      <img src="https://minotar.net/helm/Dream/48.png" title="Dream" onclick="loadPreset('Dream')">
+      <img src="https://minotar.net/helm/Technoblade/48.png" title="Technoblade" onclick="loadPreset('Technoblade')">
+      <img src="https://minotar.net/helm/Grian/48.png" title="Grian" onclick="loadPreset('Grian')">
+      <img src="https://minotar.net/helm/TommyInnit/48.png" title="TommyInnit" onclick="loadPreset('TommyInnit')">
+      <img src="https://minotar.net/helm/DanTDM/48.png" title="DanTDM" onclick="loadPreset('DanTDM')">
+    </div>
+  </div>
+
   <div class="editor-shell">
     <aside class="tools">
       <h3>TOOLBOX</h3>
@@ -210,6 +230,12 @@ let noticeTimer;
 function notify(text){
   $("notice").textContent=text; $("notice").style.opacity = "1"; $("notice").style.transform = "translate(-50%, 0)";
   clearTimeout(noticeTimer); noticeTimer=setTimeout(()=>{ $("notice").style.opacity = "0"; $("notice").style.transform = "translate(-50%, 20px)"; },3500);
+}
+
+// Preset Loader Function
+function loadPreset(name) {
+  $("username-input").value = name;
+  $("fetch-btn").click();
 }
 
 // Editor Core Setup
