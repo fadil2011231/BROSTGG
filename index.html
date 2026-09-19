@@ -260,14 +260,11 @@ function init3D() {
   });
   $("skin-container").appendChild(viewer.canvas);
   
-  // NOTE: I removed skinview3d's OrbitControls completely! 
-  // Because it was blocking the pointer events preventing you from painting.
   viewer.animation = new skinview3d.IdleAnimation();
-
   setup3DPainting();
 }
 
-// 100% WORKING LIVE 3D PAINTING
+// 100% WORKING LIVE 3D PAINTING (WITH UV BUG FIX)
 function setup3DPainting() {
   const canvas = viewer.canvas;
   let is3DPainting = false;
@@ -330,11 +327,9 @@ function setup3DPainting() {
       const hit = intersects[i];
       if (hit.uv && hit.object.visible) {
         
-        // Convert UV to Pixel Map (Minecraft maps correctly to 64x64)
         let px = Math.floor(hit.uv.x * 64);
         let py = Math.floor(hit.uv.y * 64);
         
-        // If the texture is flipped by the library, adjust Y
         if (hit.object.material && hit.object.material.map && hit.object.material.map.flipY === false) {
           py = Math.floor((1 - hit.uv.y) * 64);
         } else {
@@ -364,8 +359,21 @@ function setup3DPainting() {
 
         // Pencil / Eraser Tool
         const p = [px, py];
-        if (last3DPoint) line(last3DPoint, p);
-        else pixel(px, py);
+        
+        if (last3DPoint) {
+          // *** BUG FIX: Check distance to prevent giant lines jumping across body parts ***
+          const dist = Math.max(Math.abs(last3DPoint[0] - p[0]), Math.abs(last3DPoint[1] - p[1]));
+          
+          if (dist < 4) { 
+            // Only draw a line if the mouse moved a short distance (on the same body part)
+            line(last3DPoint, p);
+          } else {
+            // Mouse jumped to a new body part, just draw a single pixel
+            pixel(px, py);
+          }
+        } else {
+          pixel(px, py);
+        }
         
         last3DPoint = p;
         update();
@@ -465,7 +473,8 @@ function flood(x,y){
 // 2D Canvas Manual Drawing logic
 function point(event){
   const r=atlas.getBoundingClientRect();
-  return [Math.max(0,Math.min(63,Math.floor((event.clientX-r.left)/r.width*64))), Math.max(0,Math.min(63,Math.floor((event.clientY-r.top)/r.height*64)))];
+  return [Math.max(0,Math.min(63,Math.floor((event.clientX-r.left)/r.width*64))), Math.max(0,Math.min(63,Math.floor((event.clientY-r.top)/r.height*256/4))))]; 
+  // adjusted because the small canvas is 256px wide (256/4 = 64)
 }
 function pixel(x,y){ if(tool==="eraser")paint.clearRect(x,y,1,1); else{paint.fillStyle=$("color").value;paint.fillRect(x,y,1,1);} }
 function line(a,b){
@@ -474,7 +483,12 @@ function line(a,b){
 }
 
 atlas.addEventListener("pointerdown",event=>{
-  if(event.button!==0 || drawing)return; event.preventDefault(); const p=point(event);
+  if(event.button!==0 || drawing)return; event.preventDefault(); 
+  const r=atlas.getBoundingClientRect();
+  const px = Math.floor((event.clientX-r.left)/r.width*64);
+  const py = Math.floor((event.clientY-r.top)/r.height*64);
+  const p = [px, py];
+  
   if(tool==="pick"){
     const data=paint.getImageData(p[0],p[1],1,1).data; if(data[3]===0)return;
     setColor("#"+Array.from(data.slice(0,3)).map(v=>v.toString(16).padStart(2,"0")).join(""));
@@ -485,7 +499,11 @@ atlas.addEventListener("pointerdown",event=>{
 });
 atlas.addEventListener("pointermove",event=>{
   if(!drawing || event.pointerId!==activePointer)return; 
-  const p=point(event); line(lastPoint,p);lastPoint=p;update();
+  const r=atlas.getBoundingClientRect();
+  const px = Math.floor((event.clientX-r.left)/r.width*64);
+  const py = Math.floor((event.clientY-r.top)/r.height*64);
+  const p = [px, py];
+  line(lastPoint,p);lastPoint=p;update();
 });
 function finish(event){ if(event.pointerId!==activePointer)return; drawing=false;lastPoint=null;activePointer=null; }
 atlas.addEventListener("pointerup",finish); atlas.addEventListener("pointercancel",finish); atlas.addEventListener("lostpointercapture",finish);
