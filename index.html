@@ -6,7 +6,6 @@
 <meta name="theme-color" content="#090b14">
 <title>SkinForge — Pro 3D Skin Studio</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
-<!-- Three.js & Skinview3D Library -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://unpkg.com/skinview3d@3.0.0/bundles/skinview3d.bundle.js"></script>
 
@@ -67,7 +66,8 @@ body{
   right:-10%;
 }
 
-button, input{
+button,
+input{
   font:inherit;
   outline:none;
 }
@@ -88,7 +88,10 @@ a{
   position:relative;
 }
 
-h1, h2, .brand, .tag{
+h1,
+h2,
+.brand,
+.tag{
   font-family:'Bebas Neue',sans-serif;
   letter-spacing:1px;
 }
@@ -244,7 +247,8 @@ h2{
   overflow:hidden;
 }
 
-.tools, .preview-panel{
+.tools,
+.preview-panel{
   padding:24px;
   background:rgba(0,0,0,.2);
 }
@@ -253,7 +257,8 @@ h2{
   border-right:1px solid var(--line);
 }
 
-.tools h3, .preview-panel h3{
+.tools h3,
+.preview-panel h3{
   font-family:'Bebas Neue',sans-serif;
   font-size:20px;
   margin:0 0 20px;
@@ -376,11 +381,13 @@ input[type=color]::-webkit-color-swatch{
   overflow:hidden;
 }
 
+/* Ensure the canvas fills the space and doesn't block touch actions */
 #skin-container canvas{
   outline:none;
   cursor:crosshair;
   touch-action:none;
   user-select:none;
+  display: block;
 }
 
 .controls-hint{
@@ -469,15 +476,30 @@ input[type=color]::-webkit-color-swatch{
 }
 
 @media(max-width:1050px){
-  .editor-shell{ grid-template-columns:180px minmax(0,1fr); }
-  .preview-panel{ grid-column:1/-1; border-left:0; border-top:1px solid var(--line); }
+  .editor-shell{
+    grid-template-columns:180px minmax(0,1fr);
+  }
+  .preview-panel{
+    grid-column:1/-1;
+    border-left:0;
+    border-top:1px solid var(--line);
+  }
 }
 
 @media(max-width:768px){
-  .wrap{ padding:0 20px; }
-  .fetch-bar{ flex-direction:column; }
-  .editor-shell{ grid-template-columns:1fr; }
-  .tools{ border-right:0; border-bottom:1px solid var(--line); }
+  .wrap{
+    padding:0 20px;
+  }
+  .fetch-bar{
+    flex-direction:column;
+  }
+  .editor-shell{
+    grid-template-columns:1fr;
+  }
+  .tools{
+    border-right:0;
+    border-bottom:1px solid var(--line);
+  }
 }
 </style>
 </head>
@@ -492,7 +514,9 @@ input[type=color]::-webkit-color-swatch{
 <div class="wrap">
 
 <header>
-  <a class="brand" href="#">SKIN<span>FORGE</span></a>
+  <a class="brand" href="#">
+    SKIN<span>FORGE</span>
+  </a>
 </header>
 
 <main>
@@ -502,15 +526,21 @@ input[type=color]::-webkit-color-swatch{
 <div class="heading">
   <div>
     <div class="tag">PRO 3D SKIN STUDIO</div>
+
     <h2>Fetch & 3D Paint</h2>
-    <div class="sub">Paint directly on the Minecraft 3D model.</div>
+
+    <div class="sub">
+      Paint directly on the Minecraft 3D model.
+    </div>
   </div>
 </div>
+
 
 <div class="fetch-bar">
   <input type="text" id="username-input" placeholder="e.g. Dream, Technoblade, Grian...">
   <button class="btn primary" id="fetch-btn">🔍 Load Skin</button>
 </div>
+
 
 <div class="presets">
 <h4>🔥 QUICK LOAD PRESETS</h4>
@@ -524,10 +554,13 @@ input[type=color]::-webkit-color-swatch{
 </div>
 </div>
 
+
 <div class="editor-shell">
+
 
 <aside class="tools">
 <h3>TOOLBOX</h3>
+
 <div class="tool-grid">
 <button class="btn active" data-tool="pencil" aria-pressed="true">Pencil</button>
 <button class="btn" data-tool="eraser" aria-pressed="false">Eraser</button>
@@ -551,18 +584,23 @@ input[type=color]::-webkit-color-swatch{
 
 <button class="btn" id="import-button">↑ Import PNG</button>
 <input type="file" id="file" accept="image/png" hidden>
+
 </aside>
 
+
 <div class="workspace">
+
 <div class="workspace-top">
 <span>LIVE 3D EDITOR</span>
 <span style="background:rgba(0,0,0,.3); padding:4px 10px; border-radius:6px;">Paint on Model</span>
 </div>
 
-<div class="preview-stage" id="skin-container"></div>
+<div class="preview-stage" id="skin-container">
+  <canvas id="canvas-3d" width="450" height="480"></canvas>
+</div>
 
 <div class="controls-hint">
-🖱️ LEFT CLICK = PAINT &nbsp; | &nbsp; 🖱️ RIGHT CLICK / SCROLL CLICK = ROTATE
+🖱️ LEFT CLICK = PAINT &nbsp; | &nbsp; 🖱️ RIGHT CLICK = ROTATE
 </div>
 
 <div class="toggle">
@@ -570,36 +608,44 @@ input[type=color]::-webkit-color-swatch{
 <button class="btn" id="anim-walk">Walk</button>
 <button class="btn" id="anim-run">Run</button>
 </div>
+
 </div>
 
+
 <aside class="preview-panel">
+
 <h3>2D PREVIEW</h3>
+
 <div class="atlas-wrap">
 <canvas id="atlas" width="256" height="256"></canvas>
 </div>
+
 <p class="help" style="margin-top:10px;">Small view of the flat skin map.</p>
 
 <label style="display:block;margin-top:20px;">Skin filename</label>
 <input id="skin-name" type="text" maxlength="60" value="Custom-Skin">
 
 <button class="btn primary" id="download" style="margin-bottom:12px; font-size:14px; padding:14px;">↓ Download Skin</button>
+
 </aside>
 
 </div>
-
 </section>
 </main>
 </div>
 
 <div id="notice" role="status" aria-live="polite"></div>
 
+
 <script>
 "use strict";
 
 /* =========================================================
-   HELPERS & UI
+   BASIC HELPERS
 ========================================================= */
+
 const $ = id => document.getElementById(id);
+
 let noticeTimer;
 
 function notify(text){
@@ -610,7 +656,7 @@ function notify(text){
   noticeTimer = setTimeout(() => {
     $("notice").style.opacity = "0";
     $("notice").style.transform = "translate(-50%,20px)";
-  }, 3500);
+  },3500);
 }
 
 function loadPreset(name){
@@ -619,13 +665,15 @@ function loadPreset(name){
 }
 
 /* =========================================================
-   SKIN DATA (2D)
+   SKIN CANVAS & DRAWING TOOLS
 ========================================================= */
+
 const skin = document.createElement("canvas");
 skin.width = 64;
 skin.height = 64;
 
-const paint = skin.getContext("2d", { willReadFrequently: true });
+const paint = skin.getContext("2d",{ willReadFrequently:true });
+
 const atlas = $("atlas");
 const ac = atlas.getContext("2d");
 
@@ -639,87 +687,112 @@ const future = [];
 const historyLimit = 40;
 
 /* =========================================================
-   THREE.JS & SKINVIEW 3D SETUP
+   THREE / SKINVIEW INITIALIZATION
 ========================================================= */
+
 let viewer = null;
-let orbitControl = null;
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
 
 function init3D(){
+  const canvas3D = document.getElementById("canvas-3d");
+
   viewer = new skinview3d.SkinViewer({
-      canvas: document.createElement("canvas"),
+      canvas: canvas3D,
       width: 450,
       height: 480,
       skin: skin.toDataURL()
   });
 
-  $("skin-container").appendChild(viewer.canvas);
-
-  // Use the built in OrbitControls but ONLY FOR RIGHT CLICK
-  orbitControl = skinview3d.createOrbitControls(viewer);
-  orbitControl.enablePan = false;
-  orbitControl.enableZoom = true;
-  
-  // THREE.MOUSE: LEFT = 0, MIDDLE = 1, RIGHT = 2
-  // We disable LEFT click rotation by setting it to -1, and use RIGHT click to Rotate!
-  orbitControl.mouseButtons = {
-    LEFT: -1, 
-    MIDDLE: THREE.MOUSE.DOLLY,
-    RIGHT: THREE.MOUSE.ROTATE
-  };
+  // VERY IMPORTANT: Turn off default controls to stop crashes
+  if(viewer.controls){
+    viewer.controls.enableRotate = false;
+    viewer.controls.enableZoom = false;
+    viewer.controls.enablePan = false;
+  }
 
   viewer.animation = new skinview3d.IdleAnimation();
 
-  setup3DPainting();
+  setup3DPainting(canvas3D);
 }
 
 /* =========================================================
-   3D PAINTING (LEFT CLICK ONLY)
+   CUSTOM, UNBREAKABLE 3D ROTATION & PAINTING
 ========================================================= */
-function setup3DPainting(){
-  const canvas = viewer.canvas;
+
+function setup3DPainting(canvas3D){
+
   let is3DPainting = false;
+  let isRotating = false;
+  let prevX = 0;
+  let prevY = 0;
   let last3DPoint = null;
   let lastHitObject = null;
 
-  // Prevent context menu to allow right-click rotation
-  canvas.oncontextmenu = () => false;
+  // Block the browser's right-click menu so we can use it to rotate!
+  canvas3D.addEventListener("contextmenu", e => e.preventDefault());
 
-  canvas.addEventListener("pointerdown", e => {
-      // If Left Click (button 0), start painting!
-      if(e.button === 0){
-        is3DPainting = true;
-        canvas.style.cursor = "crosshair";
-        try { canvas.setPointerCapture(e.pointerId); } catch(err){}
-        paintOn3D(e);
-      }
-  });
+  // DOWN
+  canvas3D.addEventListener("pointerdown", e => {
+      e.preventDefault();
 
-  canvas.addEventListener("pointermove", e => {
-      if(is3DPainting){
-        paintOn3D(e);
-      }
-  });
-
-  function stopPainting(e){
-      if(is3DPainting){
+      // Right Click (Button 2) -> Rotate
+      if(e.button === 2){
+        isRotating = true;
         is3DPainting = false;
-        last3DPoint = null;
-        lastHitObject = null;
-        canvas.style.cursor = "crosshair";
-        try { canvas.releasePointerCapture(e.pointerId); } catch(err){}
+        prevX = e.clientX;
+        prevY = e.clientY;
+        canvas3D.style.cursor = "grabbing";
+        return;
       }
-  }
 
-  canvas.addEventListener("pointerup", stopPainting);
-  canvas.addEventListener("pointercancel", stopPainting);
-  canvas.addEventListener("lostpointercapture", stopPainting);
+      // Left Click (Button 0) -> Paint
+      if(e.button === 0){
+        isRotating = false;
+        is3DPainting = true;
+        canvas3D.style.cursor = "crosshair";
+        paintOn3D(e);
+      }
+  });
 
+  // MOVE
+  window.addEventListener("pointermove", e => {
+      if(isRotating){
+        const dx = e.clientX - prevX;
+        const dy = e.clientY - prevY;
+
+        // Rotate the 3D model manually
+        viewer.playerObject.rotation.y += dx * 0.015;
+        
+        let newPitch = viewer.playerObject.rotation.x + dy * 0.015;
+        // Block it from doing front flips (lock up and down view)
+        newPitch = Math.max(-Math.PI/2, Math.min(Math.PI/2, newPitch));
+        viewer.playerObject.rotation.x = newPitch;
+
+        prevX = e.clientX;
+        prevY = e.clientY;
+        return;
+      }
+
+      if(is3DPainting){
+        paintOn3D(e);
+      }
+  });
+
+  // UP / RELEASE
+  window.addEventListener("pointerup", () => {
+      is3DPainting = false;
+      isRotating = false;
+      last3DPoint = null;
+      lastHitObject = null;
+      canvas3D.style.cursor = "crosshair";
+  });
+
+  // CORE PAINT LOGIC
   function paintOn3D(e){
-    if(e.target !== canvas) return;
+    if(e.target !== canvas3D) return;
 
-    const rect = canvas.getBoundingClientRect();
+    const rect = canvas3D.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
 
@@ -728,10 +801,17 @@ function setup3DPainting(){
 
     raycaster.setFromCamera(mouse, viewer.camera);
 
-    // Look for hits on the player mesh objects
+    // Get all parts of the player model
     const intersects = raycaster.intersectObjects(viewer.scene.children, true);
 
-    let hit = intersects.find(h => h.uv && h.object && h.object.visible && h.object.isMesh);
+    // Find the first part we clicked on
+    let hit = null;
+    for(let i = 0; i < intersects.length; i++){
+      if(intersects[i].uv && intersects[i].object && intersects[i].object.visible){
+        hit = intersects[i];
+        break;
+      }
+    }
 
     if(!hit){
       last3DPoint = null;
@@ -739,9 +819,8 @@ function setup3DPainting(){
       return;
     }
 
-    // Convert UV to 64x64 Pixel Map
+    // PERFECT UV MATH: (No upside-down bugs)
     let px = Math.floor(hit.uv.x * 64);
-    // Three.js UV y-axis is inverted compared to Canvas API
     let py = Math.floor((1 - hit.uv.y) * 64);
 
     px = Math.max(0, Math.min(63, px));
@@ -758,7 +837,7 @@ function setup3DPainting(){
     }
 
     if(tool === "fill"){
-      if(!last3DPoint){ remember(); }
+      if(!last3DPoint) remember();
       flood(px, py);
       update();
       last3DPoint = [px, py];
@@ -766,14 +845,17 @@ function setup3DPainting(){
       return;
     }
 
+    // Draw Line or Pixel
     const currentPoint = [px, py];
 
     if(!last3DPoint){
       remember();
       pixel(px, py);
     } else {
-      // Connect line only if mouse didn't jump across different body parts
-      if(lastHitObject === hit.object){
+      const dist = Math.max(Math.abs(last3DPoint[0] - px), Math.abs(last3DPoint[1] - py));
+      
+      // If we are still on the same body part AND we didn't jump crazy far, connect the line
+      if(lastHitObject === hit.object && dist < 10){
         line(last3DPoint, currentPoint);
       } else {
         pixel(px, py);
@@ -782,13 +864,16 @@ function setup3DPainting(){
 
     last3DPoint = currentPoint;
     lastHitObject = hit.object;
+    
+    // Instantly show the paint on the 3D model!
     update();
   }
 }
 
 /* =========================================================
-   HISTORY (UNDO / REDO)
+   HISTORY (UNDO/REDO)
 ========================================================= */
+
 function snapshot(){
   return {
     pixels: paint.getImageData(0, 0, 64, 64),
@@ -798,32 +883,17 @@ function snapshot(){
 
 function remember(){
   history.push(snapshot());
-  if(history.length > historyLimit){ history.shift(); }
+  if(history.length > historyLimit) history.shift();
   future.length = 0;
 }
 
-$("undo").onclick = function(){
-  if(!history.length) return;
-  future.push(snapshot());
-  const previous = history.pop();
-  paint.putImageData(previous.pixels, 0, 0);
-  update();
-};
-
-$("redo").onclick = function(){
-  if(!future.length) return;
-  history.push(snapshot());
-  const next = future.pop();
-  paint.putImageData(next.pixels, 0, 0);
-  update();
-};
-
 /* =========================================================
-   UPDATE & RENDER
+   FAST UPDATE (NO LAG)
 ========================================================= */
 let renderTimeout = null;
 
 function update(){
+  // Update the small 2D canvas on the right
   ac.clearRect(0, 0, 256, 256);
   ac.imageSmoothingEnabled = false;
   ac.drawImage(skin, 0, 0, 256, 256);
@@ -841,12 +911,12 @@ function update(){
     ac.stroke();
   }
 
+  // Update the 3D Model SUPER FAST
   if(viewer){
     clearTimeout(renderTimeout);
-    // Add small delay to prevent lag while painting fast
     renderTimeout = setTimeout(() => {
         viewer.loadSkin(skin.toDataURL());
-    }, 15);
+    }, 5);
   }
 
   $("undo").disabled = history.length === 0;
@@ -854,7 +924,7 @@ function update(){
 }
 
 function loadIntoEditor(source, name, keepHistory){
-  if(keepHistory){ remember(); }
+  if(keepHistory) remember();
   paint.clearRect(0, 0, 64, 64);
   paint.drawImage(source, 0, 0, 64, 64);
   $("skin-name").value = name;
@@ -862,8 +932,9 @@ function loadIntoEditor(source, name, keepHistory){
 }
 
 /* =========================================================
-   SKIN LOADER
+   MINECRAFT USERNAME LOADER
 ========================================================= */
+
 $("fetch-btn").onclick = function(){
   const user = $("username-input").value.trim();
   if(!user){ notify("Please enter a username!"); return; }
@@ -889,8 +960,9 @@ $("fetch-btn").onclick = function(){
 };
 
 /* =========================================================
-   TOOLS & COLORS
+   ANIMATION & TOOLS
 ========================================================= */
+
 function setAnim(type){
   $("anim-idle").classList.remove("primary");
   $("anim-walk").classList.remove("primary");
@@ -941,8 +1013,29 @@ $("color").oninput = e => setColor(e.target.value);
 $("show-grid").onchange = update;
 
 /* =========================================================
-   FLOOD FILL
+   UNDO/REDO LOGIC
 ========================================================= */
+
+$("undo").onclick = function(){
+  if(!history.length) return;
+  future.push(snapshot());
+  const previous = history.pop();
+  paint.putImageData(previous.pixels, 0, 0);
+  update();
+};
+
+$("redo").onclick = function(){
+  if(!future.length) return;
+  history.push(snapshot());
+  const next = future.pop();
+  paint.putImageData(next.pixels, 0, 0);
+  update();
+};
+
+/* =========================================================
+   FLOOD FILL MATH
+========================================================= */
+
 function flood(x, y){
   const image = paint.getImageData(0, 0, 64, 64);
   const data = image.data;
@@ -983,8 +1076,9 @@ function flood(x, y){
 }
 
 /* =========================================================
-   2D ATLAS DRAWING
+   2D ATLAS DRAWING (ON THE SMALL MAP)
 ========================================================= */
+
 function point(event){
   const rect = atlas.getBoundingClientRect();
   return [
@@ -1014,7 +1108,7 @@ function line(a, b){
 }
 
 atlas.addEventListener("pointerdown", event => {
-    if(event.button !== 0 || drawing){ return; }
+    if(event.button !== 0 || drawing) return;
     event.preventDefault();
     const p = point(event);
 
@@ -1042,7 +1136,7 @@ atlas.addEventListener("pointerdown", event => {
 });
 
 atlas.addEventListener("pointermove", event => {
-    if(!drawing || event.pointerId !== activePointer){ return; }
+    if(!drawing || event.pointerId !== activePointer) return;
     const p = point(event);
     line(lastPoint, p);
     lastPoint = p;
@@ -1063,6 +1157,7 @@ atlas.addEventListener("lostpointercapture", finish2D);
 /* =========================================================
    DOWNLOAD & IMPORT
 ========================================================= */
+
 $("download").onclick = function(){
   skin.toBlob(blob => {
       if(!blob) return;
@@ -1095,8 +1190,9 @@ $("file").onchange = event => {
 };
 
 /* =========================================================
-   START
+   APP START
 ========================================================= */
+
 init3D();
 
 const steveImg = new Image();
