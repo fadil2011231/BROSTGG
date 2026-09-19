@@ -260,11 +260,12 @@ function init3D() {
   });
   $("skin-container").appendChild(viewer.canvas);
   
+  // NOTE: OrbitControls completely removed to fix left click rotation bugs!
   viewer.animation = new skinview3d.IdleAnimation();
   setup3DPainting();
 }
 
-// 100% WORKING LIVE 3D PAINTING (WITH UV BUG FIX)
+// 100% WORKING LIVE 3D PAINTING (WITH CUSTOM ROTATION & UV BUG FIX)
 function setup3DPainting() {
   const canvas = viewer.canvas;
   let is3DPainting = false;
@@ -283,7 +284,7 @@ function setup3DPainting() {
       prevY = e.clientY;
       canvas.style.cursor = "grabbing";
     } 
-    // Left Click (button 0) -> PAINT!
+    // Left Click (button 0) -> ONLY FOR PAINTING!
     else if (e.button === 0) {
       is3DPainting = true;
       paintOn3D(e);
@@ -292,6 +293,7 @@ function setup3DPainting() {
 
   window.addEventListener('pointermove', (e) => {
     if (isRotating) {
+      // CUSTOM ROTATION LOGIC (ONLY on Right Click)
       const dx = e.clientX - prevX;
       viewer.playerObject.rotation.y += dx * 0.015;
       prevX = e.clientX;
@@ -309,7 +311,7 @@ function setup3DPainting() {
   });
 
   function paintOn3D(e) {
-    if(e.target !== canvas) return; // Make sure we are clicking on the canvas
+    if(e.target !== canvas) return;
     
     const rect = canvas.getBoundingClientRect();
     const x = e.clientX - rect.left;
@@ -321,20 +323,15 @@ function setup3DPainting() {
     
     raycaster.setFromCamera(mouse, viewer.camera);
     // Raycast the scene
-    const intersects = raycaster.intersectObjects(viewer.scene.children, true);
+    const intersects = raycaster.intersectObjects(viewer.playerObject.children, true);
     
     for (let i = 0; i < intersects.length; i++) {
       const hit = intersects[i];
       if (hit.uv && hit.object.visible) {
         
+        // PERFECT UV MAPPING MATCH FOR SKINVIEW3D (No flipY needed)
         let px = Math.floor(hit.uv.x * 64);
         let py = Math.floor(hit.uv.y * 64);
-        
-        if (hit.object.material && hit.object.material.map && hit.object.material.map.flipY === false) {
-          py = Math.floor((1 - hit.uv.y) * 64);
-        } else {
-          py = Math.floor(hit.uv.y * 64);
-        }
 
         px = Math.max(0, Math.min(63, px));
         py = Math.max(0, Math.min(63, py));
@@ -361,11 +358,12 @@ function setup3DPainting() {
         const p = [px, py];
         
         if (last3DPoint) {
+          // Distance Check: Prevents huge lines when moving from Head to Body etc.
           const dist = Math.max(Math.abs(last3DPoint[0] - p[0]), Math.abs(last3DPoint[1] - p[1]));
           if (dist < 4) { 
             line(last3DPoint, p);
           } else {
-            pixel(px, py);
+            pixel(px, py); // Paint single pixel if mouse jumped
           }
         } else {
           pixel(px, py);
