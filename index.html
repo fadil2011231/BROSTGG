@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#090b14">
-<title>SkinForge — Pro Skin Studio</title>
+<title>SkinForge — Pro 3D Skin Studio</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
 <!-- Three.js & Skinview3D Library -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -70,9 +70,9 @@ h2{font-size:42px;margin:5px 0; font-weight: 400;}
 .preset-grid img { width: 44px; height: 44px; border-radius: 8px; cursor: pointer; border: 2px solid transparent; transition: 0.2s; background: rgba(0,0,0,0.3); }
 .preset-grid img:hover { border-color: var(--accent); transform: scale(1.1); box-shadow: 0 5px 15px rgba(182, 250, 112, 0.2); }
 
-/* Editor Shell */
+/* Editor Shell - Center is now 3D! */
 .editor-shell{
-  display:grid;grid-template-columns:220px minmax(0,1fr) 300px;
+  display:grid;grid-template-columns:220px minmax(0,1fr) 260px;
   border:1px solid var(--line);border-radius:20px; background: var(--panel);
   backdrop-filter: blur(20px); box-shadow: 0 25px 50px rgba(0,0,0,0.3); overflow:hidden;
 }
@@ -93,27 +93,29 @@ input[type=color]::-webkit-color-swatch { border: 1px solid var(--line); border-
 .check{display:flex;gap:10px;align-items:center;font-size:13px;color:var(--muted);margin:20px 0; cursor: pointer;}
 .workspace{padding:24px;min-width:0; display: flex; flex-direction: column;}
 .workspace-top{display:flex;justify-content:space-between;gap:12px;font:12px monospace;color:var(--muted);margin-bottom:20px}
-.atlas-wrap{
-  width:100%;max-width:512px;margin:auto;
-  background:repeating-conic-gradient(#1e2230 0% 25%,#151824 0% 50%) 0 0/16px 16px;
-  border:1px solid var(--line); border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); overflow: hidden;
-}
-#atlas{width:100%;display:block;image-rendering:pixelated;touch-action:none;cursor:crosshair}
-.help{font-size:12px;color:var(--muted);line-height:1.7; margin-top: auto; padding-top: 20px;}
 
-.preview-panel{border-left:1px solid var(--line)}
+/* Big 3D Stage */
 .preview-stage{
-  display:flex;justify-content:center;align-items:center;min-height:340px;
-  border-radius:12px; background:radial-gradient(circle at center, rgba(182, 250, 112, 0.1), rgba(0,0,0,0.4) 80%);
-  border: 1px solid var(--line); box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+  display:flex;justify-content:center;align-items:center; flex: 1; min-height: 450px;
+  border-radius:12px; background:radial-gradient(circle at center, rgba(182, 250, 112, 0.05), rgba(0,0,0,0.6) 80%);
+  border: 1px solid var(--line); box-shadow: inset 0 0 30px rgba(0,0,0,0.7);
   position: relative; overflow: hidden;
 }
 #skin-container canvas { outline: none; cursor: crosshair; }
+.controls-hint { font-size: 12px; color: var(--accent); margin: 15px 0 10px; text-align: center; }
 
-.controls-hint { font-size: 11px; color: var(--accent); margin: 8px 0 12px; text-align: center; }
-.toggle{display:flex;gap:10px;margin:15px 0 20px}
-.toggle .btn{flex:1; padding: 8px 4px; font-size: 12px;}
-.preview-panel input[type=text]{width:100%;margin:8px 0 16px; padding: 10px; background: rgba(0,0,0,0.3); border: 1px solid var(--line); color: white; border-radius: 8px;}
+/* Small 2D Atlas */
+.preview-panel{border-left:1px solid var(--line)}
+.atlas-wrap{
+  width:100%;max-width:256px;margin:auto;
+  background:repeating-conic-gradient(#1e2230 0% 25%,#151824 0% 50%) 0 0/8px 8px;
+  border:1px solid var(--line); border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); overflow: hidden;
+}
+#atlas{width:100%;display:block;image-rendering:pixelated;touch-action:none;cursor:crosshair}
+
+.toggle{display:flex;gap:10px;margin:15px auto 0; max-width: 300px; justify-content: center;}
+.toggle .btn{flex:1; padding: 10px; font-size: 13px;}
+.preview-panel input[type=text]{width:100%;margin:20px 0 16px; padding: 12px; background: rgba(0,0,0,0.3); border: 1px solid var(--line); color: white; border-radius: 8px;}
 .preview-panel>.btn{width:100%;margin-top:6px}
 #notice{
   position:fixed;bottom:30px;left:50%;transform:translateX(-50%);
@@ -151,7 +153,7 @@ input[type=color]::-webkit-color-swatch { border: 1px solid var(--line); border-
     <div>
       <div class="tag">PRO 3D SKIN STUDIO</div>
       <h2>Fetch & 3D Paint</h2>
-      <div class="sub">Draw directly on the 2D texture map or click & paint on the live 3D player!</div>
+      <div class="sub">Just like Skindex! Paint directly on the big 3D model.</div>
     </div>
   </div>
 
@@ -173,6 +175,7 @@ input[type=color]::-webkit-color-swatch { border: 1px solid var(--line); border-
   </div>
 
   <div class="editor-shell">
+    <!-- LEFT PANEL: TOOLS -->
     <aside class="tools">
       <h3>TOOLBOX</h3>
       <div class="tool-grid">
@@ -193,29 +196,32 @@ input[type=color]::-webkit-color-swatch { border: 1px solid var(--line); border-
       <input type="file" id="file" accept="image/png" hidden>
     </aside>
 
+    <!-- CENTER PANEL: BIG 3D EDITOR -->
     <div class="workspace">
       <div class="workspace-top">
-        <span>TEXTURE MAP · 64 × 64</span>
-        <span id="coordinates" style="background: rgba(0,0,0,0.3); padding: 4px 10px; border-radius: 6px;">X — / Y —</span>
+        <span>LIVE 3D EDITOR</span>
+        <span style="background: rgba(0,0,0,0.3); padding: 4px 10px; border-radius: 6px;">Paint on Model</span>
       </div>
-      <div class="atlas-wrap">
-        <canvas id="atlas" width="512" height="512"></canvas>
-      </div>
-      <p class="help">Left-click to draw on 2D map. Left-click to paint directly on the 3D player. Right-click drag to rotate 3D view.</p>
-    </div>
-
-    <aside class="preview-panel">
-      <h3>LIVE 3D VIEW</h3>
       <div class="preview-stage" id="skin-container"></div>
-      <div class="controls-hint">🖱️ Left-Click: Paint | Right-Click Drag: Rotate</div>
+      <div class="controls-hint">🖱️ Left-Click: Paint directly on 3D Model | Right-Click Hold & Drag: Rotate Player</div>
       <div class="toggle">
         <button class="btn primary" id="anim-idle">Idle</button>
         <button class="btn" id="anim-walk">Walk</button>
         <button class="btn" id="anim-run">Run</button>
       </div>
-      <label>Skin filename</label>
+    </div>
+
+    <!-- RIGHT PANEL: SMALL 2D PREVIEW -->
+    <aside class="preview-panel">
+      <h3>2D PREVIEW</h3>
+      <div class="atlas-wrap">
+        <canvas id="atlas" width="256" height="256"></canvas>
+      </div>
+      <p class="help" style="margin-top: 10px;">Small view of the flat skin map.</p>
+      
+      <label style="display:block; margin-top:20px;">Skin filename</label>
       <input id="skin-name" type="text" maxlength="60" value="Custom-Skin">
-      <button class="btn primary" id="download" style="margin-bottom: 12px;">↓ Download PNG</button>
+      <button class="btn primary" id="download" style="margin-bottom: 12px; font-size: 14px; padding: 14px;">↓ Download Skin</button>
     </aside>
   </div>
 </section>
@@ -253,7 +259,7 @@ const mouse = new THREE.Vector2();
 function init3D() {
   viewer = new skinview3d.SkinViewer({
     canvas: document.createElement("canvas"),
-    width: 270, height: 340, skin: skin.toDataURL()
+    width: 450, height: 480, skin: skin.toDataURL()
   });
   $("skin-container").appendChild(viewer.canvas);
   
@@ -266,11 +272,13 @@ function init3D() {
   setup3DPainting();
 }
 
+// THE MAGIC: Live 3D Raycast Painting
 function setup3DPainting() {
   const canvas = viewer.canvas;
   let is3DPainting = false;
   let isRotating = false;
   let prevMouse = { x: 0, y: 0 };
+  let last3DPoint = null;
 
   canvas.addEventListener('contextmenu', e => e.preventDefault());
 
@@ -282,25 +290,25 @@ function setup3DPainting() {
     raycaster.setFromCamera(mouse, viewer.camera);
     const intersects = raycaster.intersectObjects(viewer.playerObject.children, true);
 
-    for (let hit of intersects) {
+    for (let i = 0; i < intersects.length; i++) {
+      const hit = intersects[i];
       if (hit.uv && hit.object.isMesh) {
         let x = Math.floor(hit.uv.x * 64);
         let y = Math.floor((1 - hit.uv.y) * 64);
-        x = Math.max(0, Math.min(63, x));
-        y = Math.max(0, Math.min(63, y));
-        return [x, y];
+        return [Math.max(0, Math.min(63, x)), Math.max(0, Math.min(63, y))];
       }
     }
     return null;
   }
 
   canvas.addEventListener('pointerdown', e => {
-    if (e.button === 2) {
+    // Right Click to Rotate
+    if (e.button === 2 || e.button === 1) {
       isRotating = true;
       prevMouse = { x: e.clientX, y: e.clientY };
       return;
     }
-
+    // Left Click to Paint
     if (e.button === 0) {
       const p = getRaycastPixel(e);
       if (p) {
@@ -321,6 +329,7 @@ function setup3DPainting() {
         }
 
         is3DPainting = true;
+        last3DPoint = p;
         pixel(...p);
         update();
       }
@@ -328,6 +337,7 @@ function setup3DPainting() {
   });
 
   window.addEventListener('pointermove', e => {
+    // Handle Rotation
     if (isRotating) {
       const dx = e.clientX - prevMouse.x;
       const dy = e.clientY - prevMouse.y;
@@ -337,11 +347,16 @@ function setup3DPainting() {
       return;
     }
 
+    // Handle Smooth Brush Painting
     if (is3DPainting) {
       const p = getRaycastPixel(e);
       if (p) {
-        pixel(...p);
+        if (last3DPoint) line(last3DPoint, p);
+        else pixel(...p);
+        last3DPoint = p;
         update();
+      } else {
+        last3DPoint = null;
       }
     }
   });
@@ -349,6 +364,7 @@ function setup3DPainting() {
   window.addEventListener('pointerup', () => {
     is3DPainting = false;
     isRotating = false;
+    last3DPoint = null;
   });
 }
 
@@ -357,12 +373,14 @@ function remember(){ history.push(snapshot()); if(history.length>historyLimit)hi
 
 let renderTimeout;
 function update(){
-  ac.clearRect(0,0,512,512); ac.imageSmoothingEnabled=false; ac.drawImage(skin,0,0,512,512);
+  // Update Small 2D Atlas
+  ac.clearRect(0,0,256,256); ac.imageSmoothingEnabled=false; ac.drawImage(skin,0,0,256,256);
   if($("show-grid").checked){
     ac.strokeStyle="rgba(255,255,255,0.08)";ac.lineWidth=1; ac.beginPath();
-    for(let i=0;i<=64;i++){ ac.moveTo(i*8+.5,0);ac.lineTo(i*8+.5,512); ac.moveTo(0,i*8+.5);ac.lineTo(512,i*8+.5); }
+    for(let i=0;i<=64;i++){ ac.moveTo(i*4+.5,0);ac.lineTo(i*4+.5,256); ac.moveTo(0,i*4+.5);ac.lineTo(256,i*4+.5); }
     ac.stroke();
   }
+  // Update 3D Model View
   if(viewer) { clearTimeout(renderTimeout); renderTimeout = setTimeout(() => viewer.loadSkin(skin.toDataURL()), 10); }
   $("undo").disabled=history.length===0; $("redo").disabled=future.length===0;
 }
@@ -372,7 +390,7 @@ function loadIntoEditor(source,name,keepHistory){
   $("skin-name").value=name; update();
 }
 
-// Fetch Minecraft Username API (Minotar)
+// Fetch Minecraft Username API
 $("fetch-btn").onclick = () => {
   const user = $("username-input").value.trim();
   if(!user) { notify("Please enter a username!"); return; }
@@ -398,7 +416,7 @@ $("fetch-btn").onclick = () => {
   };
 };
 
-// UI Controls & Painting
+// UI Controls & Painting Logic
 function setAnim(type) {
   $("anim-idle").classList.remove("primary"); $("anim-walk").classList.remove("primary"); $("anim-run").classList.remove("primary");
   if(type === 'idle') { viewer.animation = new skinview3d.IdleAnimation(); $("anim-idle").classList.add("primary"); }
@@ -436,6 +454,7 @@ function flood(x,y){
   paint.putImageData(image,0,0);
 }
 
+// 2D Canvas Manual Drawing logic
 function point(event){
   const r=atlas.getBoundingClientRect();
   return [Math.max(0,Math.min(63,Math.floor((event.clientX-r.left)/r.width*64))), Math.max(0,Math.min(63,Math.floor((event.clientY-r.top)/r.height*64)))];
@@ -457,8 +476,8 @@ atlas.addEventListener("pointerdown",event=>{
   drawing=true;activePointer=event.pointerId;lastPoint=p; atlas.setPointerCapture(event.pointerId); pixel(...p);update();
 });
 atlas.addEventListener("pointermove",event=>{
-  const p=point(event); $("coordinates").textContent=`X ${p[0]} / Y ${p[1]}`;
-  if(!drawing || event.pointerId!==activePointer)return; line(lastPoint,p);lastPoint=p;update();
+  if(!drawing || event.pointerId!==activePointer)return; 
+  const p=point(event); line(lastPoint,p);lastPoint=p;update();
 });
 function finish(event){ if(event.pointerId!==activePointer)return; drawing=false;lastPoint=null;activePointer=null; }
 atlas.addEventListener("pointerup",finish); atlas.addEventListener("pointercancel",finish); atlas.addEventListener("lostpointercapture",finish);
