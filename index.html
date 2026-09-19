@@ -4,11 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#090b14">
-
 <title>SkinForge — Pro 3D Skin Studio</title>
-
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
-
+<!-- Three.js & Skinview3D Library -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://unpkg.com/skinview3d@3.0.0/bundles/skinview3d.bundle.js"></script>
 
@@ -69,8 +67,7 @@ body{
   right:-10%;
 }
 
-button,
-input{
+button, input{
   font:inherit;
   outline:none;
 }
@@ -91,10 +88,7 @@ a{
   position:relative;
 }
 
-h1,
-h2,
-.brand,
-.tag{
+h1, h2, .brand, .tag{
   font-family:'Bebas Neue',sans-serif;
   letter-spacing:1px;
 }
@@ -250,8 +244,7 @@ h2{
   overflow:hidden;
 }
 
-.tools,
-.preview-panel{
+.tools, .preview-panel{
   padding:24px;
   background:rgba(0,0,0,.2);
 }
@@ -260,8 +253,7 @@ h2{
   border-right:1px solid var(--line);
 }
 
-.tools h3,
-.preview-panel h3{
+.tools h3, .preview-panel h3{
   font-family:'Bebas Neue',sans-serif;
   font-size:20px;
   margin:0 0 20px;
@@ -477,30 +469,15 @@ input[type=color]::-webkit-color-swatch{
 }
 
 @media(max-width:1050px){
-  .editor-shell{
-    grid-template-columns:180px minmax(0,1fr);
-  }
-  .preview-panel{
-    grid-column:1/-1;
-    border-left:0;
-    border-top:1px solid var(--line);
-  }
+  .editor-shell{ grid-template-columns:180px minmax(0,1fr); }
+  .preview-panel{ grid-column:1/-1; border-left:0; border-top:1px solid var(--line); }
 }
 
 @media(max-width:768px){
-  .wrap{
-    padding:0 20px;
-  }
-  .fetch-bar{
-    flex-direction:column;
-  }
-  .editor-shell{
-    grid-template-columns:1fr;
-  }
-  .tools{
-    border-right:0;
-    border-bottom:1px solid var(--line);
-  }
+  .wrap{ padding:0 20px; }
+  .fetch-bar{ flex-direction:column; }
+  .editor-shell{ grid-template-columns:1fr; }
+  .tools{ border-right:0; border-bottom:1px solid var(--line); }
 }
 </style>
 </head>
@@ -515,9 +492,7 @@ input[type=color]::-webkit-color-swatch{
 <div class="wrap">
 
 <header>
-  <a class="brand" href="#">
-    SKIN<span>FORGE</span>
-  </a>
+  <a class="brand" href="#">SKIN<span>FORGE</span></a>
 </header>
 
 <main>
@@ -528,9 +503,7 @@ input[type=color]::-webkit-color-swatch{
   <div>
     <div class="tag">PRO 3D SKIN STUDIO</div>
     <h2>Fetch & 3D Paint</h2>
-    <div class="sub">
-      Paint directly on the Minecraft 3D model.
-    </div>
+    <div class="sub">Paint directly on the Minecraft 3D model.</div>
   </div>
 </div>
 
@@ -543,4 +516,596 @@ input[type=color]::-webkit-color-swatch{
 <h4>🔥 QUICK LOAD PRESETS</h4>
 <div class="preset-grid">
 <button class="btn" onclick="loadPreset('BROSTGG')" style="padding:8px 14px;">😎 BROSTGG</button>
-<img src="
+<img src="https://minotar.net/helm/Dream/48.png" title="Dream" onclick="loadPreset('Dream')">
+<img src="https://minotar.net/helm/Technoblade/48.png" title="Technoblade" onclick="loadPreset('Technoblade')">
+<img src="https://minotar.net/helm/Grian/48.png" title="Grian" onclick="loadPreset('Grian')">
+<img src="https://minotar.net/helm/TommyInnit/48.png" title="TommyInnit" onclick="loadPreset('TommyInnit')">
+<img src="https://minotar.net/helm/DanTDM/48.png" title="DanTDM" onclick="loadPreset('DanTDM')">
+</div>
+</div>
+
+<div class="editor-shell">
+
+<aside class="tools">
+<h3>TOOLBOX</h3>
+<div class="tool-grid">
+<button class="btn active" data-tool="pencil" aria-pressed="true">Pencil</button>
+<button class="btn" data-tool="eraser" aria-pressed="false">Eraser</button>
+<button class="btn" data-tool="fill" aria-pressed="false">Fill</button>
+<button class="btn" data-tool="pick" aria-pressed="false">Picker</button>
+</div>
+
+<div class="color-row">
+<input type="color" id="color" value="#b6fa70">
+<span id="hex" style="font-family:monospace;text-transform:uppercase;">#B6FA70</span>
+</div>
+
+<div class="swatches" id="swatches"></div>
+
+<button class="btn" id="undo">↶ Undo</button>
+<button class="btn" id="redo">↷ Redo</button>
+
+<label class="check">
+<input type="checkbox" id="show-grid" checked> Show Pixel Grid
+</label>
+
+<button class="btn" id="import-button">↑ Import PNG</button>
+<input type="file" id="file" accept="image/png" hidden>
+</aside>
+
+<div class="workspace">
+<div class="workspace-top">
+<span>LIVE 3D EDITOR</span>
+<span style="background:rgba(0,0,0,.3); padding:4px 10px; border-radius:6px;">Paint on Model</span>
+</div>
+
+<div class="preview-stage" id="skin-container"></div>
+
+<div class="controls-hint">
+🖱️ LEFT CLICK = PAINT &nbsp; | &nbsp; 🖱️ RIGHT CLICK / SCROLL CLICK = ROTATE
+</div>
+
+<div class="toggle">
+<button class="btn primary" id="anim-idle">Idle</button>
+<button class="btn" id="anim-walk">Walk</button>
+<button class="btn" id="anim-run">Run</button>
+</div>
+</div>
+
+<aside class="preview-panel">
+<h3>2D PREVIEW</h3>
+<div class="atlas-wrap">
+<canvas id="atlas" width="256" height="256"></canvas>
+</div>
+<p class="help" style="margin-top:10px;">Small view of the flat skin map.</p>
+
+<label style="display:block;margin-top:20px;">Skin filename</label>
+<input id="skin-name" type="text" maxlength="60" value="Custom-Skin">
+
+<button class="btn primary" id="download" style="margin-bottom:12px; font-size:14px; padding:14px;">↓ Download Skin</button>
+</aside>
+
+</div>
+
+</section>
+</main>
+</div>
+
+<div id="notice" role="status" aria-live="polite"></div>
+
+<script>
+"use strict";
+
+/* =========================================================
+   HELPERS & UI
+========================================================= */
+const $ = id => document.getElementById(id);
+let noticeTimer;
+
+function notify(text){
+  $("notice").textContent = text;
+  $("notice").style.opacity = "1";
+  $("notice").style.transform = "translate(-50%,0)";
+  clearTimeout(noticeTimer);
+  noticeTimer = setTimeout(() => {
+    $("notice").style.opacity = "0";
+    $("notice").style.transform = "translate(-50%,20px)";
+  }, 3500);
+}
+
+function loadPreset(name){
+  $("username-input").value = name;
+  $("fetch-btn").click();
+}
+
+/* =========================================================
+   SKIN DATA (2D)
+========================================================= */
+const skin = document.createElement("canvas");
+skin.width = 64;
+skin.height = 64;
+
+const paint = skin.getContext("2d", { willReadFrequently: true });
+const atlas = $("atlas");
+const ac = atlas.getContext("2d");
+
+let tool = "pencil";
+let drawing = false;
+let lastPoint = null;
+let activePointer = null;
+
+const history = [];
+const future = [];
+const historyLimit = 40;
+
+/* =========================================================
+   THREE.JS & SKINVIEW 3D SETUP
+========================================================= */
+let viewer = null;
+let orbitControl = null;
+const raycaster = new THREE.Raycaster();
+const mouse = new THREE.Vector2();
+
+function init3D(){
+  viewer = new skinview3d.SkinViewer({
+      canvas: document.createElement("canvas"),
+      width: 450,
+      height: 480,
+      skin: skin.toDataURL()
+  });
+
+  $("skin-container").appendChild(viewer.canvas);
+
+  // Use the built in OrbitControls but ONLY FOR RIGHT CLICK
+  orbitControl = skinview3d.createOrbitControls(viewer);
+  orbitControl.enablePan = false;
+  orbitControl.enableZoom = true;
+  
+  // THREE.MOUSE: LEFT = 0, MIDDLE = 1, RIGHT = 2
+  // We disable LEFT click rotation by setting it to -1, and use RIGHT click to Rotate!
+  orbitControl.mouseButtons = {
+    LEFT: -1, 
+    MIDDLE: THREE.MOUSE.DOLLY,
+    RIGHT: THREE.MOUSE.ROTATE
+  };
+
+  viewer.animation = new skinview3d.IdleAnimation();
+
+  setup3DPainting();
+}
+
+/* =========================================================
+   3D PAINTING (LEFT CLICK ONLY)
+========================================================= */
+function setup3DPainting(){
+  const canvas = viewer.canvas;
+  let is3DPainting = false;
+  let last3DPoint = null;
+  let lastHitObject = null;
+
+  // Prevent context menu to allow right-click rotation
+  canvas.oncontextmenu = () => false;
+
+  canvas.addEventListener("pointerdown", e => {
+      // If Left Click (button 0), start painting!
+      if(e.button === 0){
+        is3DPainting = true;
+        canvas.style.cursor = "crosshair";
+        try { canvas.setPointerCapture(e.pointerId); } catch(err){}
+        paintOn3D(e);
+      }
+  });
+
+  canvas.addEventListener("pointermove", e => {
+      if(is3DPainting){
+        paintOn3D(e);
+      }
+  });
+
+  function stopPainting(e){
+      if(is3DPainting){
+        is3DPainting = false;
+        last3DPoint = null;
+        lastHitObject = null;
+        canvas.style.cursor = "crosshair";
+        try { canvas.releasePointerCapture(e.pointerId); } catch(err){}
+      }
+  }
+
+  canvas.addEventListener("pointerup", stopPainting);
+  canvas.addEventListener("pointercancel", stopPainting);
+  canvas.addEventListener("lostpointercapture", stopPainting);
+
+  function paintOn3D(e){
+    if(e.target !== canvas) return;
+
+    const rect = canvas.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    mouse.x = (x / rect.width) * 2 - 1;
+    mouse.y = -(y / rect.height) * 2 + 1;
+
+    raycaster.setFromCamera(mouse, viewer.camera);
+
+    // Look for hits on the player mesh objects
+    const intersects = raycaster.intersectObjects(viewer.scene.children, true);
+
+    let hit = intersects.find(h => h.uv && h.object && h.object.visible && h.object.isMesh);
+
+    if(!hit){
+      last3DPoint = null;
+      lastHitObject = null;
+      return;
+    }
+
+    // Convert UV to 64x64 Pixel Map
+    let px = Math.floor(hit.uv.x * 64);
+    // Three.js UV y-axis is inverted compared to Canvas API
+    let py = Math.floor((1 - hit.uv.y) * 64);
+
+    px = Math.max(0, Math.min(63, px));
+    py = Math.max(0, Math.min(63, py));
+
+    if(tool === "pick"){
+      const data = paint.getImageData(px, py, 1, 1).data;
+      if(data[3] !== 0){
+        const color = "#" + Array.from(data.slice(0,3)).map(v => v.toString(16).padStart(2,"0")).join("");
+        setColor(color);
+        document.querySelector('[data-tool="pencil"]').click();
+      }
+      return;
+    }
+
+    if(tool === "fill"){
+      if(!last3DPoint){ remember(); }
+      flood(px, py);
+      update();
+      last3DPoint = [px, py];
+      lastHitObject = hit.object;
+      return;
+    }
+
+    const currentPoint = [px, py];
+
+    if(!last3DPoint){
+      remember();
+      pixel(px, py);
+    } else {
+      // Connect line only if mouse didn't jump across different body parts
+      if(lastHitObject === hit.object){
+        line(last3DPoint, currentPoint);
+      } else {
+        pixel(px, py);
+      }
+    }
+
+    last3DPoint = currentPoint;
+    lastHitObject = hit.object;
+    update();
+  }
+}
+
+/* =========================================================
+   HISTORY (UNDO / REDO)
+========================================================= */
+function snapshot(){
+  return {
+    pixels: paint.getImageData(0, 0, 64, 64),
+    name: $("skin-name").value
+  };
+}
+
+function remember(){
+  history.push(snapshot());
+  if(history.length > historyLimit){ history.shift(); }
+  future.length = 0;
+}
+
+$("undo").onclick = function(){
+  if(!history.length) return;
+  future.push(snapshot());
+  const previous = history.pop();
+  paint.putImageData(previous.pixels, 0, 0);
+  update();
+};
+
+$("redo").onclick = function(){
+  if(!future.length) return;
+  history.push(snapshot());
+  const next = future.pop();
+  paint.putImageData(next.pixels, 0, 0);
+  update();
+};
+
+/* =========================================================
+   UPDATE & RENDER
+========================================================= */
+let renderTimeout = null;
+
+function update(){
+  ac.clearRect(0, 0, 256, 256);
+  ac.imageSmoothingEnabled = false;
+  ac.drawImage(skin, 0, 0, 256, 256);
+
+  if($("show-grid").checked){
+    ac.strokeStyle = "rgba(255,255,255,.08)";
+    ac.lineWidth = 1;
+    ac.beginPath();
+    for(let i = 0; i <= 64; i++){
+      ac.moveTo(i * 4 + .5, 0);
+      ac.lineTo(i * 4 + .5, 256);
+      ac.moveTo(0, i * 4 + .5);
+      ac.lineTo(256, i * 4 + .5);
+    }
+    ac.stroke();
+  }
+
+  if(viewer){
+    clearTimeout(renderTimeout);
+    // Add small delay to prevent lag while painting fast
+    renderTimeout = setTimeout(() => {
+        viewer.loadSkin(skin.toDataURL());
+    }, 15);
+  }
+
+  $("undo").disabled = history.length === 0;
+  $("redo").disabled = future.length === 0;
+}
+
+function loadIntoEditor(source, name, keepHistory){
+  if(keepHistory){ remember(); }
+  paint.clearRect(0, 0, 64, 64);
+  paint.drawImage(source, 0, 0, 64, 64);
+  $("skin-name").value = name;
+  update();
+}
+
+/* =========================================================
+   SKIN LOADER
+========================================================= */
+$("fetch-btn").onclick = function(){
+  const user = $("username-input").value.trim();
+  if(!user){ notify("Please enter a username!"); return; }
+
+  notify("Fetching skin for " + user + "...");
+  const img = new Image();
+  img.crossOrigin = "Anonymous";
+
+  if(user.toUpperCase() === "BROSTGG"){
+    img.src = "https://i.postimg.cc/mkDbXDVd/D.png";
+  } else {
+    img.src = `https://minotar.net/skin/${encodeURIComponent(user)}`;
+  }
+
+  img.onload = function(){
+    loadIntoEditor(img, user + "-Skin", true);
+    notify(user + "'s skin loaded successfully!");
+  };
+
+  img.onerror = function(){
+    notify("Could not find a skin for that username.");
+  };
+};
+
+/* =========================================================
+   TOOLS & COLORS
+========================================================= */
+function setAnim(type){
+  $("anim-idle").classList.remove("primary");
+  $("anim-walk").classList.remove("primary");
+  $("anim-run").classList.remove("primary");
+
+  if(type === "idle"){
+    viewer.animation = new skinview3d.IdleAnimation();
+    $("anim-idle").classList.add("primary");
+  }
+  if(type === "walk"){
+    viewer.animation = new skinview3d.WalkingAnimation();
+    $("anim-walk").classList.add("primary");
+  }
+  if(type === "run"){
+    viewer.animation = new skinview3d.RunningAnimation();
+    $("anim-run").classList.add("primary");
+  }
+}
+
+$("anim-idle").onclick = () => setAnim("idle");
+$("anim-walk").onclick = () => setAnim("walk");
+$("anim-run").onclick = () => setAnim("run");
+
+document.querySelectorAll("[data-tool]").forEach(button => {
+    button.onclick = () => {
+      tool = button.dataset.tool;
+      document.querySelectorAll("[data-tool]").forEach(btn => {
+          btn.classList.toggle("active", btn.dataset.tool === tool);
+      });
+    };
+});
+
+function setColor(value){
+  $("color").value = value;
+  $("hex").textContent = value.toUpperCase();
+}
+
+$("color").oninput = e => setColor(e.target.value);
+
+[ "#b6fa70", "#ffffff", "#202638", "#dba77e", "#684329", "#4cb7ec", "#b278e3", "#ed6175", "#f7c657", "#43bca0" ].forEach(color => {
+  const button = document.createElement("button");
+  button.className = "swatch";
+  button.style.background = color;
+  button.onclick = () => setColor(color);
+  $("swatches").appendChild(button);
+});
+
+$("show-grid").onchange = update;
+
+/* =========================================================
+   FLOOD FILL
+========================================================= */
+function flood(x, y){
+  const image = paint.getImageData(0, 0, 64, 64);
+  const data = image.data;
+  const offset = (y * 64 + x) * 4;
+  const original = Array.from(data.slice(offset, offset + 4));
+  const hex = $("color").value;
+  const replacement = [
+    parseInt(hex.slice(1,3), 16),
+    parseInt(hex.slice(3,5), 16),
+    parseInt(hex.slice(5,7), 16),
+    255
+  ];
+
+  if(original.every((v,i) => v === replacement[i])) return;
+
+  const stack = [y * 64 + x];
+  const visited = new Uint8Array(4096);
+
+  while(stack.length){
+    const pos = stack.pop();
+    if(visited[pos]) continue;
+    visited[pos] = 1;
+    const i = pos * 4;
+    
+    if(!original.every((v,k) => data[i+k] === v)) continue;
+    
+    replacement.forEach((v,k) => data[i+k] = v);
+
+    const px = pos % 64;
+    const py = Math.floor(pos / 64);
+
+    if(px > 0) stack.push(pos - 1);
+    if(px < 63) stack.push(pos + 1);
+    if(py > 0) stack.push(pos - 64);
+    if(py < 63) stack.push(pos + 64);
+  }
+  paint.putImageData(image, 0, 0);
+}
+
+/* =========================================================
+   2D ATLAS DRAWING
+========================================================= */
+function point(event){
+  const rect = atlas.getBoundingClientRect();
+  return [
+    Math.max(0, Math.min(63, Math.floor((event.clientX - rect.left) / rect.width * 64))),
+    Math.max(0, Math.min(63, Math.floor((event.clientY - rect.top) / rect.height * 64)))
+  ];
+}
+
+function pixel(x, y){
+  if(tool === "eraser"){
+    paint.clearRect(x, y, 1, 1);
+  } else {
+    paint.fillStyle = $("color").value;
+    paint.fillRect(x, y, 1, 1);
+  }
+}
+
+function line(a, b){
+  const dx = b[0] - a[0];
+  const dy = b[1] - a[1];
+  const steps = Math.max(Math.abs(dx), Math.abs(dy));
+
+  for(let i = 0; i <= steps; i++){
+    const t = steps === 0 ? 0 : i / steps;
+    pixel(Math.round(a[0] + dx * t), Math.round(a[1] + dy * t));
+  }
+}
+
+atlas.addEventListener("pointerdown", event => {
+    if(event.button !== 0 || drawing){ return; }
+    event.preventDefault();
+    const p = point(event);
+
+    if(tool === "pick"){
+      const data = paint.getImageData(p[0], p[1], 1, 1).data;
+      if(data[3] === 0) return;
+      setColor("#" + Array.from(data.slice(0,3)).map(v => v.toString(16).padStart(2,"0")).join(""));
+      document.querySelector('[data-tool="pencil"]').click();
+      return;
+    }
+
+    remember();
+    if(tool === "fill"){
+      flood(p[0], p[1]);
+      update();
+      return;
+    }
+
+    drawing = true;
+    activePointer = event.pointerId;
+    lastPoint = p;
+    atlas.setPointerCapture(event.pointerId);
+    pixel(p[0], p[1]);
+    update();
+});
+
+atlas.addEventListener("pointermove", event => {
+    if(!drawing || event.pointerId !== activePointer){ return; }
+    const p = point(event);
+    line(lastPoint, p);
+    lastPoint = p;
+    update();
+});
+
+function finish2D(event){
+  if(event.pointerId !== activePointer) return;
+  drawing = false;
+  lastPoint = null;
+  activePointer = null;
+}
+
+atlas.addEventListener("pointerup", finish2D);
+atlas.addEventListener("pointercancel", finish2D);
+atlas.addEventListener("lostpointercapture", finish2D);
+
+/* =========================================================
+   DOWNLOAD & IMPORT
+========================================================= */
+$("download").onclick = function(){
+  skin.toBlob(blob => {
+      if(!blob) return;
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = ($("skin-name").value.replace(/[^a-z0-9_-]/gi, "-") || "My-Skin") + ".png";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 15000);
+  }, "image/png");
+};
+
+$("import-button").onclick = () => $("file").click();
+
+$("file").onchange = event => {
+  const file = event.target.files[0];
+  event.target.value = "";
+  if(!file) return;
+
+  const url = URL.createObjectURL(file);
+  const image = new Image();
+
+  image.onload = () => {
+    URL.revokeObjectURL(url);
+    loadIntoEditor(image, file.name.replace(/\.png$/i, ""), true);
+  };
+  image.src = url;
+};
+
+/* =========================================================
+   START
+========================================================= */
+init3D();
+
+const steveImg = new Image();
+steveImg.crossOrigin = "Anonymous";
+steveImg.src = "https://minotar.net/skin/MHF_Steve";
+steveImg.onload = () => {
+  loadIntoEditor(steveImg, "Steve", false);
+};
+
+</script>
+</body>
+</html>
