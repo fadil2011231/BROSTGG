@@ -260,7 +260,13 @@ $("fetch-btn").onclick = () => {
   notify("Fetching skin for " + user + "...");
   const img = new Image();
   img.crossOrigin = "Anonymous"; // Allows loading image to canvas without CORS issues
-  img.src = `https://minotar.net/skin/${user}`;
+
+  // Custom check for BROSTGG
+  if (user.toUpperCase() === "BROSTGG") {
+      img.src = "image_933a9c.png"; // Loads the custom local file
+  } else {
+      img.src = `https://minotar.net/skin/${user}`; // Loads normally from API
+  }
   
   img.onload = () => {
     loadIntoEditor(img, user + "-Skin", true);
