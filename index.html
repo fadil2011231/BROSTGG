@@ -262,11 +262,16 @@ $("fetch-btn").onclick = () => {
   
   // Custom check for BROSTGG
   if (user.toUpperCase() === "BROSTGG") {
-      // Local file loading - crossOrigin is removed here to prevent file:// protocol block
       img.src = "image_933a9c.png"; 
-  } else {
-      // Web API loading - requires crossOrigin
-      img.crossOrigin = "https://i.postimg.cc/mkDbXDVd/D.png"; 
+  } 
+  // Custom check for VOHX (Using the online postimg link)
+  else if (user.toUpperCase() === "VOHX") { 
+      img.crossOrigin = "Anonymous";
+      img.src = "https://i.postimg.cc/mkDbXDVd/D.png"; 
+  } 
+  // All other players
+  else {
+      img.crossOrigin = "Anonymous"; 
       img.src = `https://minotar.net/skin/${user}`; 
   }
   
