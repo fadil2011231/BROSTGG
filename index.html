@@ -6,7 +6,8 @@
 <meta name="theme-color" content="#090b14">
 <title>SkinForge — Pro Skin Studio</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
-<!-- Skinview3D Library -->
+<!-- Three.js & Skinview3D Library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://unpkg.com/skinview3d@3.0.0/bundles/skinview3d.bundle.js"></script>
 
 <style>
@@ -62,7 +63,7 @@ h2{font-size:42px;margin:5px 0; font-weight: 400;}
 }
 .fetch-bar input:focus { border-color: var(--accent); }
 
-/* Preset Gallery */
+/* Presets Gallery */
 .presets { margin-bottom: 40px; max-width: 600px; }
 .presets h4 { margin: 0 0 12px; color: var(--muted); font-size: 14px; font-family: 'Bebas Neue', sans-serif; letter-spacing: 1px; }
 .preset-grid { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
@@ -71,7 +72,7 @@ h2{font-size:42px;margin:5px 0; font-weight: 400;}
 
 /* Editor Shell */
 .editor-shell{
-  display:grid;grid-template-columns:220px minmax(0,1fr) 280px;
+  display:grid;grid-template-columns:220px minmax(0,1fr) 300px;
   border:1px solid var(--line);border-radius:20px; background: var(--panel);
   backdrop-filter: blur(20px); box-shadow: 0 25px 50px rgba(0,0,0,0.3); overflow:hidden;
 }
@@ -102,18 +103,18 @@ input[type=color]::-webkit-color-swatch { border: 1px solid var(--line); border-
 
 .preview-panel{border-left:1px solid var(--line)}
 .preview-stage{
-  display:flex;justify-content:center;align-items:center;min-height:320px;
+  display:flex;justify-content:center;align-items:center;min-height:340px;
   border-radius:12px; background:radial-gradient(circle at center, rgba(182, 250, 112, 0.1), rgba(0,0,0,0.4) 80%);
   border: 1px solid var(--line); box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
-  cursor: grab; overflow: hidden;
+  position: relative; overflow: hidden;
 }
-.preview-stage:active { cursor: grabbing; }
-#skin-container canvas { outline: none; }
+#skin-container canvas { outline: none; cursor: crosshair; }
 
-.toggle{display:flex;gap:10px;margin:20px 0 25px}
-.toggle .btn{flex:1}
-.preview-panel input[type=text]{width:100%;margin:12px 0 20px; padding: 12px; background: rgba(0,0,0,0.3); border: 1px solid var(--line); color: white; border-radius: 8px;}
-.preview-panel>.btn{width:100%;margin-top:10px}
+.controls-hint { font-size: 11px; color: var(--accent); margin: 8px 0 12px; text-align: center; }
+.toggle{display:flex;gap:10px;margin:15px 0 20px}
+.toggle .btn{flex:1; padding: 8px 4px; font-size: 12px;}
+.preview-panel input[type=text]{width:100%;margin:8px 0 16px; padding: 10px; background: rgba(0,0,0,0.3); border: 1px solid var(--line); color: white; border-radius: 8px;}
+.preview-panel>.btn{width:100%;margin-top:6px}
 #notice{
   position:fixed;bottom:30px;left:50%;transform:translateX(-50%);
   background:var(--accent);color:#17230e;padding:14px 28px;
@@ -148,9 +149,9 @@ input[type=color]::-webkit-color-swatch { border: 1px solid var(--line); border-
 <section id="studio">
   <div class="heading">
     <div>
-      <div class="tag">GET ANY PRO SKIN</div>
-      <h2>Fetch & Edit</h2>
-      <div class="sub">Type any Minecraft Java username to load their real skin instantly.</div>
+      <div class="tag">PRO 3D SKIN STUDIO</div>
+      <h2>Fetch & 3D Paint</h2>
+      <div class="sub">Draw directly on the 2D texture map or click & paint on the live 3D player!</div>
     </div>
   </div>
 
@@ -159,11 +160,10 @@ input[type=color]::-webkit-color-swatch { border: 1px solid var(--line); border-
     <button class="btn primary" id="fetch-btn">🔍 Load Skin</button>
   </div>
 
-  <!-- 6th Feature: Preset Skins Gallery -->
   <div class="presets">
     <h4>🔥 QUICK LOAD PRESETS</h4>
     <div class="preset-grid">
-      <button class="btn" onclick="loadPreset('BROSTGG')" style="padding: 10px 16px;">😎 BROSTGG</button>
+      <button class="btn" onclick="loadPreset('BROSTGG')" style="padding: 8px 14px;">😎 BROSTGG</button>
       <img src="https://minotar.net/helm/Dream/48.png" title="Dream" onclick="loadPreset('Dream')">
       <img src="https://minotar.net/helm/Technoblade/48.png" title="Technoblade" onclick="loadPreset('Technoblade')">
       <img src="https://minotar.net/helm/Grian/48.png" title="Grian" onclick="loadPreset('Grian')">
@@ -201,12 +201,13 @@ input[type=color]::-webkit-color-swatch { border: 1px solid var(--line); border-
       <div class="atlas-wrap">
         <canvas id="atlas" width="512" height="512"></canvas>
       </div>
-      <p class="help">Draw on the map. View it live in 3D.</p>
+      <p class="help">Left-click to draw on 2D map. Left-click to paint directly on the 3D player. Right-click drag to rotate 3D view.</p>
     </div>
 
     <aside class="preview-panel">
       <h3>LIVE 3D VIEW</h3>
       <div class="preview-stage" id="skin-container"></div>
+      <div class="controls-hint">🖱️ Left-Click: Paint | Right-Click Drag: Rotate</div>
       <div class="toggle">
         <button class="btn primary" id="anim-idle">Idle</button>
         <button class="btn" id="anim-walk">Walk</button>
@@ -232,7 +233,6 @@ function notify(text){
   clearTimeout(noticeTimer); noticeTimer=setTimeout(()=>{ $("notice").style.opacity = "0"; $("notice").style.transform = "translate(-50%, 20px)"; },3500);
 }
 
-// Preset Loader Function
 function loadPreset(name) {
   $("username-input").value = name;
   $("fetch-btn").click();
@@ -245,17 +245,111 @@ const atlas=$("atlas"), ac=atlas.getContext("2d");
 let tool="pencil", drawing=false, lastPoint=null, activePointer=null;
 const history=[], future=[], historyLimit=40;
 
-// 3D Viewer Setup
-let viewer;
+// 3D Viewer & Raycasting Setup
+let viewer, orbitControl;
+const raycaster = new THREE.Raycaster();
+const mouse = new THREE.Vector2();
+
 function init3D() {
   viewer = new skinview3d.SkinViewer({
     canvas: document.createElement("canvas"),
-    width: 250, height: 320, skin: skin.toDataURL()
+    width: 270, height: 340, skin: skin.toDataURL()
   });
   $("skin-container").appendChild(viewer.canvas);
-  let control = skinview3d.createOrbitControls(viewer);
-  control.enableRotate = true; control.enableZoom = true;
+  
+  orbitControl = skinview3d.createOrbitControls(viewer);
+  orbitControl.enableRotate = false; // Disable left-click rotate so we can paint!
+  orbitControl.enableZoom = true;
+  orbitControl.enablePan = false;
   viewer.animation = new skinview3d.IdleAnimation();
+
+  setup3DPainting();
+}
+
+function setup3DPainting() {
+  const canvas = viewer.canvas;
+  let is3DPainting = false;
+  let isRotating = false;
+  let prevMouse = { x: 0, y: 0 };
+
+  canvas.addEventListener('contextmenu', e => e.preventDefault());
+
+  function getRaycastPixel(event) {
+    const rect = canvas.getBoundingClientRect();
+    mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+    mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+
+    raycaster.setFromCamera(mouse, viewer.camera);
+    const intersects = raycaster.intersectObjects(viewer.playerObject.children, true);
+
+    for (let hit of intersects) {
+      if (hit.uv && hit.object.isMesh) {
+        let x = Math.floor(hit.uv.x * 64);
+        let y = Math.floor((1 - hit.uv.y) * 64);
+        x = Math.max(0, Math.min(63, x));
+        y = Math.max(0, Math.min(63, y));
+        return [x, y];
+      }
+    }
+    return null;
+  }
+
+  canvas.addEventListener('pointerdown', e => {
+    if (e.button === 2) {
+      isRotating = true;
+      prevMouse = { x: e.clientX, y: e.clientY };
+      return;
+    }
+
+    if (e.button === 0) {
+      const p = getRaycastPixel(e);
+      if (p) {
+        if (tool === "pick") {
+          const data = paint.getImageData(p[0], p[1], 1, 1).data;
+          if (data[3] !== 0) {
+            setColor("#" + Array.from(data.slice(0, 3)).map(v => v.toString(16).padStart(2, "0")).join(""));
+            document.querySelector('[data-tool="pencil"]').click();
+          }
+          return;
+        }
+
+        remember();
+        if (tool === "fill") {
+          flood(...p);
+          update();
+          return;
+        }
+
+        is3DPainting = true;
+        pixel(...p);
+        update();
+      }
+    }
+  });
+
+  window.addEventListener('pointermove', e => {
+    if (isRotating) {
+      const dx = e.clientX - prevMouse.x;
+      const dy = e.clientY - prevMouse.y;
+      viewer.playerObject.rotation.y += dx * 0.015;
+      viewer.playerObject.rotation.x += dy * 0.015;
+      prevMouse = { x: e.clientX, y: e.clientY };
+      return;
+    }
+
+    if (is3DPainting) {
+      const p = getRaycastPixel(e);
+      if (p) {
+        pixel(...p);
+        update();
+      }
+    }
+  });
+
+  window.addEventListener('pointerup', () => {
+    is3DPainting = false;
+    isRotating = false;
+  });
 }
 
 function snapshot(){ return { pixels:paint.getImageData(0,0,64,64), name:$("skin-name").value }; }
@@ -286,12 +380,10 @@ $("fetch-btn").onclick = () => {
   notify("Fetching skin for " + user + "...");
   const img = new Image();
   
-  // Custom check for BROSTGG
   if (user.toUpperCase() === "BROSTGG") {
       img.crossOrigin = "Anonymous";
       img.src = "https://i.postimg.cc/mkDbXDVd/D.png"; 
   } 
-  // All other players
   else {
       img.crossOrigin = "Anonymous"; 
       img.src = `https://minotar.net/skin/${user}`; 
